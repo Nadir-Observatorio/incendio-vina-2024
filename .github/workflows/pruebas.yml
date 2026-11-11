@@ -1,0 +1,47 @@
+# Quality checks on every push and pull request: tests, types, style and the published figures.
+# Nothing here downloads data: the tests that need the Sentinel-2 scenes skip themselves.
+name: pruebas
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  pruebas:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install (pinned versions)
+        run: python -m pip install -r requirements.txt -e ".[dev]"
+      - name: Dependencies are consistent
+        run: python -m pip check
+      - name: Tests
+        run: python -m pytest -q --cov=severidad --cov-report=term
+      - name: Types
+        run: python -m mypy
+      - name: Style
+        run: python -m ruff check src tests
+      - name: Published figures match datos/
+        run: python -m severidad verify
+
+  cita:
+    # cffconvert needs jsonschema < 4, which breaks the notebook tools: it gets its own environment.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: CITATION.cff is valid
+        run: pipx run cffconvert==2.0.0 --validate
