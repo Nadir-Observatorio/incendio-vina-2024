@@ -1,0 +1,155 @@
+{
+  "note": "Validation metrics published with this repository (notebooks/02_validacion.ipynb). The protocol was fixed before any result was seen; the notebook recomputes every value and compares it with this file.",
+  "protocol": {
+    "classes_content_sha256": "ef09b76717fc2855e0fcaf1cd939ecf2e69e6ea7ea416c9f4618e050244f6902",
+    "municipalities": [
+      "05101",
+      "05109",
+      "05801",
+      "05804"
+    ],
+    "seed": 20240202,
+    "thresholds": {
+      "A": "all burned classes (code >= 4)",
+      "B": "moderate-low severity or higher (code >= 5)"
+    },
+    "measurement_1": "EMSN188 P08 damage points inside the municipalities with valid data; 300 points, minimum Euclidean distance 100 m; share in a burned class with Wilson 95 %",
+    "measurement_2": "EMSR715 AOI01 delineation v2 inside the municipalities and the WorldView-2 footprint; 300 points per predicted stratum, minimum Chebyshev distance 10 px (200 m); weighted by stratum area (Olofsson et al. 2014)",
+    "headline_rule": "publish the threshold with the higher area-weighted accuracy against EMSR715 and the other as a range; if they differ by less than 1 point, publish A"
+  },
+  "references": {
+    "EMSR715": {
+      "file": "EMSR715_products.zip",
+      "bytes": 178149313,
+      "sha256": "aa31440615508ba60cba1fe3da0c9e980d308d6547d76a7a0bf21a81b0a25905",
+      "product": "EMSR715_AOI01_DEL_PRODUCT_v2.zip",
+      "product_bytes": 12884618,
+      "product_sha256": "7742f03b8191187757e09d1f318b4001786612bd8b3c223e4023e9a662b67eb8"
+    },
+    "EMSN188": {
+      "file": "EMSN188_GeospatialData.zip",
+      "bytes": 1326369,
+      "sha256": "443e7c353f392c56124004a9ae3b2dfc1dbb1af26d9fd0fef31f610cb5dafed3"
+    }
+  },
+  "measurement_1": {
+    "points": 7275,
+    "in_municipalities": 7275,
+    "in_no_data": 5,
+    "universe": 7270,
+    "sample": 300,
+    "sample_grades": {
+      "Destroyed": 203,
+      "Damaged": 30,
+      "Possible damage": 67
+    },
+    "A": {
+      "in_burned_class": 164,
+      "n": 300,
+      "pct": 54.7,
+      "wilson": [
+        49.0,
+        60.2
+      ],
+      "destroyed_in_burned_class": 123,
+      "destroyed_n": 203,
+      "destroyed_pct": 60.6,
+      "destroyed_wilson": [
+        53.7,
+        67.1
+      ]
+    },
+    "B": {
+      "in_burned_class": 42,
+      "n": 300,
+      "pct": 14.0,
+      "wilson": [
+        10.5,
+        18.4
+      ],
+      "destroyed_in_burned_class": 32,
+      "destroyed_n": 203,
+      "destroyed_pct": 15.8,
+      "destroyed_wilson": [
+        11.4,
+        21.4
+      ]
+    }
+  },
+  "measurement_2": {
+    "domain_pixels": 1748150,
+    "domain_ha": 69926.0,
+    "reference_burned_ha": 8600.5,
+    "A": {
+      "predicted_burned_ha": 10663.0,
+      "overall": [
+        520,
+        600
+      ],
+      "overall_pct": 86.7,
+      "overall_wilson": [
+        83.7,
+        89.2
+      ],
+      "weighted_accuracy_pct": 95.2,
+      "commission": [
+        77,
+        300
+      ],
+      "commission_pct": 25.7,
+      "commission_wilson": [
+        21.1,
+        30.9
+      ],
+      "weighted_omission_pct": 7.0,
+      "matrix": [
+        [
+          223,
+          77
+        ],
+        [
+          3,
+          297
+        ]
+      ]
+    },
+    "B": {
+      "predicted_burned_ha": 6759.7,
+      "overall": [
+        558,
+        600
+      ],
+      "overall_pct": 93.0,
+      "overall_wilson": [
+        90.7,
+        94.8
+      ],
+      "weighted_accuracy_pct": 96.8,
+      "commission": [
+        35,
+        300
+      ],
+      "commission_pct": 11.7,
+      "commission_wilson": [
+        8.5,
+        15.8
+      ],
+      "weighted_omission_pct": 19.8,
+      "matrix": [
+        [
+          265,
+          35
+        ],
+        [
+          7,
+          293
+        ]
+      ]
+    }
+  },
+  "headline": {
+    "threshold": "B",
+    "hectares": 6759.7,
+    "range_up_to_hectares": 10663.0
+  }
+}

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Severidad del incendio de Viña del Mar, febrero de 2024</title>
+<meta name="description" content="Mapa reproducible de severidad del incendio del 2 y 3 de febrero de 2024 en Viña del Mar, Valparaíso, Quilpué y Villa Alemana (Sentinel-2 dNBR), validado con Copernicus EMS. / Reproducible burn severity map of the February 2024 Viña del Mar fire.">
+<link rel="stylesheet" href="vendor/maplibre-gl/maplibre-gl.css" integrity="@SRI_CSS@">
+<style>
+  :root {
+    --ink: #1b2228; --ink-2: #4c5862; --ink-3: #7a858e;
+    --paper: #ffffff; --wash: #f5f6f4; --line: #e3e6e3;
+    --accent: #a50026; --pending: #b7791f;
+    --panel-w: 392px;
+    --r: 10px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; color: var(--ink);
+    font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased; }
+  body { display: flex; background: var(--wash); }
+  #panel { width: var(--panel-w); height: 100%; overflow-y: auto; background: var(--paper);
+    border-right: 1px solid var(--line); padding: 22px 24px 18px; scrollbar-width: thin; }
+  #map { flex: 1; height: 100%; position: relative; }
+
+  .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .kicker { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin: 0 0 6px; }
+  h1 { font-size: 20px; line-height: 1.22; margin: 0 0 6px; font-weight: 650; letter-spacing: -.01em; }
+  .sub { color: var(--ink-2); font-size: 13px; margin: 0 0 18px; }
+  .lang { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 2px; flex: none; }
+  .lang button { border: 0; background: none; font: inherit; font-size: 12px; font-weight: 600;
+    padding: 3px 10px; border-radius: 999px; color: var(--ink-2); cursor: pointer; }
+  .lang button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+
+  .headline { background: linear-gradient(180deg, #fbf3f3, #fff); border: 1px solid #f0dcdc;
+    border-radius: var(--r); padding: 14px 16px; margin-bottom: 6px; }
+  .headline .big { font-size: 34px; font-weight: 720; line-height: 1; letter-spacing: -.02em;
+    font-variant-numeric: tabular-nums; color: var(--accent); }
+  .headline .big small { font-size: 16px; font-weight: 600; color: var(--ink-2); margin-left: 4px; }
+  .headline p { font-size: 13px; color: var(--ink-2); margin: 8px 0 0; }
+  .range { margin-top: 12px; }
+  .range-bar { position: relative; height: 8px; border-radius: 4px; background: var(--wash); }
+  .range-bar span { position: absolute; top: 0; bottom: 0; border-radius: 4px; }
+  .range-legend { display: flex; justify-content: space-between; font-size: 11px; color: var(--ink-3);
+    margin-top: 4px; font-variant-numeric: tabular-nums; }
+
+  h2 { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3);
+    margin: 22px 0 10px; font-weight: 650; display: flex; align-items: center; gap: 8px; }
+  h2::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  .row { display: grid; grid-template-columns: 18px 18px 1fr auto; align-items: center; gap: 8px;
+    padding: 4px 0; font-size: 13px; }
+  .row input { margin: 0; accent-color: var(--ink); }
+  .row .v { font-variant-numeric: tabular-nums; color: var(--ink-2); text-align: right; white-space: nowrap; }
+  .sw { width: 18px; height: 12px; border-radius: 3px; border: 1px solid rgba(0,0,0,.12); }
+  .sw.none { background: repeating-linear-gradient(45deg, #fff, #fff 3px, #e5e5e5 3px, #e5e5e5 6px); }
+  .sw.line { border: 0; height: 0; border-top: 2px solid #3d4a55; border-radius: 0; }
+  .sw.dot { width: 8px; height: 8px; border-radius: 50%; background: #1b2228; border: 2px solid #fff;
+    box-shadow: 0 0 0 1px #1b2228; justify-self: center; }
+  .row.muted { color: var(--ink-3); }
+
+  .slider { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--ink-2); margin-top: 8px; }
+  .slider input { flex: 1; accent-color: var(--ink); }
+
+  .card { border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; }
+  .pending { border: 1px dashed #d9b77a; background: #fffaf0; border-radius: var(--r);
+    padding: 10px 12px; font-size: 12px; color: #6b4e16; margin-top: 8px; }
+  .pending b { color: var(--pending); }
+  .tag { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--pending); border: 1px solid #e3c48c; border-radius: 4px; padding: 0 5px; }
+
+  .metric { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 8px 0;
+    border-bottom: 1px solid var(--line); font-size: 13px; }
+  .metric:last-child { border-bottom: 0; }
+  .metric .v { font-weight: 650; font-variant-numeric: tabular-nums; text-align: right; }
+  .metric .ci { grid-column: 1 / -1; font-size: 11.5px; color: var(--ink-3); }
+  .ci-bar { position: relative; height: 4px; background: var(--wash); border-radius: 2px; margin-top: 4px; }
+  .ci-bar i { position: absolute; top: 0; bottom: 0; background: #c9ced2; border-radius: 2px; }
+  .ci-bar b { position: absolute; top: -3px; width: 2px; height: 10px; background: var(--ink); }
+
+  .bars { display: grid; gap: 9px; }
+  .bar-row { font-size: 12.5px; }
+  .bar-row .lbl { display: flex; justify-content: space-between; margin-bottom: 3px; }
+  .bar-row .lbl span:last-child { color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .stack { display: flex; height: 10px; border-radius: 3px; overflow: hidden; background: var(--wash); }
+
+  p.note { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; margin: 8px 0; }
+  footer { font-size: 11px; color: var(--ink-3); line-height: 1.5; margin-top: 20px;
+    border-top: 1px solid var(--line); padding-top: 12px; }
+  a { color: inherit; }
+
+  .city { font: 600 12px/1 system-ui, sans-serif; color: var(--ink); white-space: nowrap;
+    text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 2px #fff; pointer-events: none;
+    display: flex; align-items: center; gap: 5px; }
+  .city::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--ink);
+    border: 2px solid #fff; box-shadow: 0 0 0 1px var(--ink); }
+  .maplibregl-popup-content { font-size: 13px; padding: 9px 12px; border-radius: 8px; }
+  .pop-sw { display: inline-block; width: 12px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+  .compare { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center;
+    font-size: 12px; color: var(--ink-2); margin-top: 6px; }
+  .compare input[type=range] { accent-color: var(--ink); }
+  .compare input[type=range]:disabled { opacity: .4; }
+  .noscript { padding: 24px; font-size: 14px; }
+  .sw.edge { border: 0; height: 0; border-top: 2px solid #3d454c; border-radius: 0; }
+  :focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+
+  @media (max-width: 820px) {
+    body { flex-direction: column-reverse; }
+    #panel { width: 100%; height: 52%; border-right: 0; border-top: 1px solid var(--line); }
+    #map { height: 48%; flex: none; }
+  }
+</style>
+</head>
+<body>
+<aside id="panel" aria-label="Resultados y leyenda">
+  <div class="top">
+    <div>
+      <p class="kicker" data-i="kicker"></p>
+      <h1 data-i="title"></h1>
+    </div>
+    <div class="lang" role="group" aria-label="Idioma / Language">
+      <button type="button" data-lang="es" aria-pressed="true">ES</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+  <p class="sub" data-i="sub"></p>
+
+  <section class="headline" aria-labelledby="hl">
+    <div class="big" id="hl"></div>
+    <p id="hl-text"></p>
+    <div class="range" aria-hidden="true">
+      <div class="range-bar" id="range-bar"></div>
+      <div class="range-legend"><span>0</span><span id="range-max"></span></div>
+    </div>
+  </section>
+
+  <h2 data-i="h_legend"></h2>
+  <div id="legend"></div>
+  <div class="slider"><label for="opacity" data-i="opacity"></label><input id="opacity" type="range" min="0" max="100" value="85"><span id="opacity-v">85 %</span></div>
+
+  <h2 data-i="h_context"></h2>
+  <div id="context"></div>
+
+  <h2 data-i="h_beforeafter"></h2>
+  <label class="row"><input type="checkbox" id="cb-truecolour"><span class="sw" style="background:linear-gradient(90deg,#6f7d5a,#5b4a3f)"></span><span data-i="truecolour"></span><span class="v"></span></label>
+  <div class="compare"><span id="before-label"></span><input id="fade" type="range" min="0" max="100" value="0" disabled aria-labelledby="before-label after-label"><span id="after-label"></span></div>
+  <p class="note" data-i="truecolour_note"></p>
+
+  <h2 data-i="h_munis"></h2>
+  <div class="bars" id="munis"></div>
+
+  <h2 data-i="h_validation"></h2>
+  <div class="card" id="validation"></div>
+  <p class="note" id="protocol"></p>
+
+  <h2 data-i="h_care"></h2>
+  <p class="note" data-i="care1"></p>
+  <p class="note" data-i="care2"></p>
+  <p class="note" id="method"></p>
+
+  <footer data-i="footer"></footer>
+</aside>
+<main id="map" aria-label="Mapa de clases de severidad"></main>
+<noscript><div class="noscript">Esta página necesita JavaScript para dibujar el mapa. / This page needs JavaScript to draw the map.</div></noscript>
+
+<script src="vendor/maplibre-gl/maplibre-gl.js" integrity="@SRI_JS@"></script>
+<script>
+  /*CLASSES*/
+  /*DATA*/
+
+  const ES_NAMES = {
+    "High severity": "Severidad alta",
+    "Moderate-high severity": "Severidad moderada alta",
+    "Moderate-low severity": "Severidad moderada baja",
+    "Low severity": "Severidad baja",
+    "Unburned": "Sin quemar",
+    "Enhanced regrowth, low": "Rebrote, bajo",
+    "Enhanced regrowth, high": "Rebrote, alto"
+  };
+
+  const T = {
+    es: {
+      kicker: "Caso de portafolio · Etapa 1",
+      title: "Severidad del incendio de Viña del Mar",
+      sub: "2 y 3 de febrero de 2024 · Valparaíso, Viña del Mar, Quilpué y Villa Alemana, Chile",
+      hl_unit: "ha",
+      hl_text: (b, a, ref) => `quemadas con severidad moderada baja o mayor, en un rango de hasta <b>${a} ha</b> si se incluye la severidad baja. Copernicus EMSR715 delimitó ${ref} ha en la misma zona.`,
+      h_legend: "Clases de severidad", opacity: "Opacidad",
+      h_context: "Capas de contexto",
+      cities: "Ciudades (GeoNames, 50.000 hab. o más)",
+      built: "Área construida en 2021 (referencia)",
+      built_note: "ESA WorldCover 2021, clase 50 (edificios, caminos y otras estructuras). No incluye lo construido después de 2021 y puede subrepresentar la autoconstrucción dispersa; ninguna cifra se calcula con ella.",
+      h_beforeafter: "Antes y después",
+      truecolour: "Imágenes en color real",
+      before: "18 ene", after: "12 feb",
+      truecolour_note: "Escenas Sentinel-2 usadas en el cálculo, en color real. Mueve el control para pasar de antes a después del incendio; baja la opacidad de la severidad para ver debajo.",
+      h_munis: "Superficie quemada por comuna",
+      muni_total: (v) => `${v} ha quemadas`,
+      h_validation: "Validación",
+      v_acc: "Precisión ponderada por área frente a EMSR715",
+      v_com: "Comisión (moderada baja o mayor)",
+      v_om: "Omisión ponderada por área",
+      v_comA: "Comisión si se incluye la severidad baja",
+      v_bld: "Edificios dañados (EMSN188) dentro de alguna clase quemada",
+      v_dest: "Edificios destruidos dentro de alguna clase quemada",
+      ci: (lo, hi) => `Intervalo de Wilson al 95 %: ${lo} a ${hi} %`,
+      no_ci: "Estimador ponderado por área (Olofsson et al. 2014), sin intervalo de Wilson",
+      protocol: (n, seed) => `El umbral principal se eligió con una regla escrita antes de validar: el de mayor precisión ponderada frente a EMSR715. Muestras de ${n} puntos por estrato y ${n} puntos de daño, semilla ${seed}.`,
+      h_care: "Leer con cuidado",
+      care1: "<b>Vegetación, no edificios.</b> El dNBR a 20 m mide pérdida de vegetación; cerca de la mitad de los edificios dañados que mapeó Copernicus EMSN188 quedan fuera de toda clase quemada.",
+      care2: "Los límites de clase de Key y Benson (2006) no están calibrados para Chile central; por eso el resultado se da como rango. Las superficies se refieren a las cuatro comunas; el mapa muestra toda la ventana procesada.",
+      method: (pre, post) => `Método: escenas Sentinel-2 L2A ${pre} y ${post}; desfase de reflectancia medido sobre agua; dNBR con desfase de anillo sin quemar (Parks et al. 2018). El repositorio reconstruye el mapa y lo compara con una huella de contenido publicada.`,
+      footer: "Camilo López Barra, geógrafo.<br>Contiene datos modificados de Copernicus Sentinel 2024. Validación: Copernicus Emergency Management Service (© 2024 Unión Europea), EMSR715 y EMSN188. Ciudades: GeoNames (CC BY 4.0). Área construida: © ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium (CC BY 4.0). Mapa base © <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">colaboradores de OpenStreetMap</a>. Código MIT, datos derivados CC BY 4.0. Análisis independiente, sin respaldo de los proveedores de datos.",
+      pop_none: "Sin quemar o sin dato",
+      map_label: "Mapa de clases de severidad"
+    },
+    en: {
+      kicker: "Portfolio case · Stage 1",
+      title: "Burn severity of the Viña del Mar fire",
+      sub: "2 to 3 February 2024 · Valparaíso, Viña del Mar, Quilpué and Villa Alemana, Chile",
+      hl_unit: "ha",
+      hl_text: (b, a, ref) => `burned at moderate-low severity or higher, within a range up to <b>${a} ha</b> if low severity is included. Copernicus EMSR715 delineated ${ref} ha in the same area.`,
+      h_legend: "Severity classes", opacity: "Opacity",
+      h_context: "Context layers",
+      cities: "Cities (GeoNames, 50,000 inhabitants or more)",
+      built: "Built-up area in 2021 (reference)",
+      built_note: "ESA WorldCover 2021, class 50 (buildings, roads and other structures). It misses settlements built after 2021 and can under-represent scattered self-built housing; no figure is computed with it.",
+      h_beforeafter: "Before and after",
+      truecolour: "True-colour images",
+      before: "18 Jan", after: "12 Feb",
+      truecolour_note: "The Sentinel-2 scenes used in the computation, in true colour. Move the control to go from before to after the fire; lower the severity opacity to look underneath.",
+      h_munis: "Burned area by municipality",
+      muni_total: (v) => `${v} ha burned`,
+      h_validation: "Validation",
+      v_acc: "Area-weighted accuracy against EMSR715",
+      v_com: "Commission (moderate-low or higher)",
+      v_om: "Area-weighted omission",
+      v_comA: "Commission if low severity is included",
+      v_bld: "Damaged buildings (EMSN188) inside any burned class",
+      v_dest: "Destroyed buildings inside any burned class",
+      ci: (lo, hi) => `Wilson 95 % interval: ${lo} to ${hi} %`,
+      no_ci: "Area-weighted estimator (Olofsson et al. 2014), no Wilson interval",
+      protocol: (n, seed) => `The headline threshold was chosen by a rule written before validation: the one with the higher area-weighted accuracy against EMSR715. Samples of ${n} points per stratum and ${n} damage points, seed ${seed}.`,
+      h_care: "Read with care",
+      care1: "<b>Vegetation, not buildings.</b> dNBR at 20 m measures loss of vegetation; close to half of the damaged buildings mapped by Copernicus EMSN188 fall outside every burned class.",
+      care2: "The Key and Benson (2006) class limits are not calibrated for central Chile, which is why the result is given as a range. Areas refer to the four municipalities; the map shows the whole processed window.",
+      method: (pre, post) => `Method: Sentinel-2 L2A scenes ${pre} and ${post}; reflectance offset measured on water; dNBR with an unburned-ring offset (Parks et al. 2018). The repository rebuilds the map and checks it against a published content hash.`,
+      footer: "Camilo López Barra, geographer.<br>Contains modified Copernicus Sentinel data 2024. Validation: Copernicus Emergency Management Service (© 2024 European Union), EMSR715 and EMSN188. Cities: GeoNames (CC BY 4.0). Built-up area: © ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium (CC BY 4.0). Base map © <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap contributors</a>. Code MIT, derived data CC BY 4.0. Independent analysis, not endorsed by any of the data providers.",
+      pop_none: "Unburned or no data",
+      map_label: "Map of burn severity classes"
+    }
+  };
+
+  let lang = "es";
+  const hidden = new Set();
+  let citiesOn = true, builtOn = true, trueColourOn = false;
+  const byName = Object.fromEntries(Object.entries(DATA.names).map(([c, n]) => [n, +c]));
+  const fmt = (v, d = 1) => new Intl.NumberFormat(lang === "es" ? "es-CL" : "en-GB",
+    { minimumFractionDigits: d, maximumFractionDigits: d }).format(v);
+  const className = (code) => lang === "es" ? ES_NAMES[DATA.names[code]] : DATA.names[code];
+  const rgb = (code) => { const [r, g, b] = DATA.palette[code]; return `rgb(${r},${g},${b})`; };
+  const BURNED = [4, 5, 6, 7].filter(c => c >= DATA.thresholds.A);
+  // Hectares per class: the sum of the municipalities, so every figure comes from DATA.by_municipality.
+  const haByClass = {};
+  for (const m of DATA.by_municipality) for (const [c, v] of Object.entries(m.ha)) haByClass[c] = (haByClass[c] || 0) + v;
+  const esc = (s) => String(s).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[ch]);
+  let popup = null;
+
+  function render() {
+    const t = T[lang];
+    document.documentElement.lang = lang;
+    document.querySelectorAll("[data-i]").forEach(el => { el.innerHTML = t[el.dataset.i]; });
+    document.querySelectorAll(".lang button").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === lang));
+    document.getElementById("map").setAttribute("aria-label", t.map_label);
+
+    const h = DATA.headline;
+    document.getElementById("hl").innerHTML = `${fmt(h.hectares)}<small>${t.hl_unit}</small>`;
+    document.getElementById("hl-text").innerHTML =
+      t.hl_text(fmt(h.hectares), fmt(h.range_up_to_hectares), fmt(DATA.m2.reference_burned_ha));
+    const max = h.range_up_to_hectares * 1.08;
+    document.getElementById("range-bar").innerHTML =
+      `<span style="left:0;width:${h.range_up_to_hectares / max * 100}%;background:${rgb(4)}"></span>` +
+      `<span style="left:0;width:${h.hectares / max * 100}%;background:${rgb(6)}"></span>` +
+      `<span title="EMSR715" style="left:${DATA.m2.reference_burned_ha / max * 100}%;width:2px;background:#1b2228;border-radius:0;top:-3px;bottom:-3px"></span>`;
+    document.getElementById("range-max").textContent = `${fmt(h.range_up_to_hectares)} ha`;
+
+    // Legend from CLASSES (names and colours of severidad.estudio).
+    const legend = document.getElementById("legend");
+    legend.innerHTML = "";
+    for (const [label, colour] of CLASSES) {
+      const code = byName[label.replace(" (transparent)", "")];
+      const row = document.createElement("label");
+      row.className = "row" + (colour ? "" : " muted");
+      const cb = document.createElement("input");
+      cb.type = "checkbox"; cb.checked = colour !== null && !hidden.has(code); cb.disabled = colour === null || !pixels;
+      cb.addEventListener("change", () => { cb.checked ? hidden.delete(code) : hidden.add(code); repaint(); });
+      const sw = document.createElement("span");
+      sw.className = colour ? "sw" : "sw none";
+      if (colour) sw.style.background = colour;
+      const name = document.createElement("span"); name.textContent = className(code);
+      const v = document.createElement("span"); v.className = "v";
+      v.textContent = `${fmt(haByClass[code])} ha`;
+      row.append(cb, sw, name, v);
+      legend.append(row);
+    }
+
+    // Context layers.
+    const ctx = document.getElementById("context");
+    ctx.innerHTML = `
+      <label class="row"><input type="checkbox" id="cb-cities" ${citiesOn ? "checked" : ""}><span class="sw dot"></span><span>${t.cities}</span><span class="v"></span></label>
+      <label class="row"><input type="checkbox" id="cb-built" ${builtOn ? "checked" : ""}><span class="sw edge"></span><span>${t.built}</span><span class="v"></span></label>
+      <p class="note">${t.built_note}</p>`;
+    document.getElementById("cb-cities").addEventListener("change", (e) => { citiesOn = e.target.checked; toggleCities(); });
+    document.getElementById("cb-built").addEventListener("change", (e) => { builtOn = e.target.checked; setVisible("built", builtOn); });
+
+    // Before and after.
+    document.getElementById("cb-truecolour").checked = trueColourOn;
+    document.getElementById("before-label").textContent = t.before;
+    document.getElementById("after-label").textContent = t.after;
+
+    // By municipality: burned classes stacked.
+    const munis = document.getElementById("munis");
+    const totals = DATA.by_municipality.map(m => BURNED.reduce((s, c) => s + (m.ha[c] || 0), 0));
+    const top = Math.max(...totals);
+    munis.innerHTML = DATA.by_municipality.map((m, i) => {
+      const segs = [...BURNED].reverse().map(c => `<span title="${esc(className(c))}: ${fmt(m.ha[c])} ha" style="width:${(m.ha[c] || 0) / top * 100}%;background:${rgb(c)}"></span>`).join("");
+      return `<div class="bar-row"><div class="lbl"><span>${esc(m.name)}</span><span>${t.muni_total(fmt(totals[i]))}</span></div><div class="stack">${segs}</div></div>`;
+    }).join("");
+
+    // Validation.
+    const A = DATA.m2.A, B = DATA.m2.B, M1 = DATA.m1.A;
+    const metric = (label, v, ci) => {
+      const bar = ci ? `<div class="ci-bar"><i style="left:${ci[0]}%;width:${ci[1] - ci[0]}%"></i><b style="left:calc(${v}% - 1px)"></b></div>` : "";
+      return `<div class="metric"><span>${label}</span><span class="v">${fmt(v)} %</span>
+        <span class="ci">${ci ? t.ci(fmt(ci[0]), fmt(ci[1])) : t.no_ci}${bar}</span></div>`;
+    };
+    document.getElementById("validation").innerHTML =
+      metric(t.v_acc, B.weighted_accuracy_pct, null) +
+      metric(t.v_com, B.commission_pct, B.commission_wilson) +
+      metric(t.v_om, B.weighted_omission_pct, null) +
+      metric(t.v_comA, A.commission_pct, A.commission_wilson) +
+      metric(t.v_bld, M1.pct, M1.wilson) +
+      metric(t.v_dest, M1.destroyed_pct, M1.destroyed_wilson);
+    document.getElementById("protocol").textContent = t.protocol(DATA.sample_size, DATA.seed);
+    document.getElementById("method").textContent = t.method(DATA.scenes.before, DATA.scenes.after);
+    if (popup) popup.remove();
+  }
+
+  // ----- Map -----
+  const C = DATA.corners, L = DATA.layers;
+  const image = (url) => ({ type: "image", url, coordinates: C });
+  const map = new maplibregl.Map({
+    container: "map",
+    style: {
+      version: 8,
+      sources: {
+        osm: { type: "raster", tileSize: 256, maxzoom: 19,
+          tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+          attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>' },
+        before: image(L.before), after: image(L.after),
+        severity: image(L.classes), built: image(L.built)
+      },
+      layers: [
+        { id: "osm", type: "raster", source: "osm", paint: { "raster-saturation": -0.75, "raster-opacity": 0.85, "raster-contrast": -0.1 } },
+        { id: "before", type: "raster", source: "before", layout: { visibility: "none" }, paint: { "raster-fade-duration": 0 } },
+        { id: "after", type: "raster", source: "after", layout: { visibility: "none" }, paint: { "raster-opacity": 0, "raster-fade-duration": 0 } },
+        { id: "severity", type: "raster", source: "severity", paint: { "raster-opacity": 0.85, "raster-resampling": "nearest", "raster-fade-duration": 0 } },
+        { id: "built", type: "raster", source: "built", paint: { "raster-resampling": "nearest", "raster-fade-duration": 0 } }
+      ]
+    },
+    bounds: [C[3], C[1]],
+    fitBoundsOptions: { padding: 24 },
+    maxZoom: 17,
+    attributionControl: { compact: false, customAttribution: "Copernicus Sentinel 2024 · ESA WorldCover 2021 · GeoNames" }
+  });
+  map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+  map.addControl(new maplibregl.ScaleControl({ unit: "metric" }), "bottom-right");
+  const setVisible = (id, on) => { if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", on ? "visible" : "none"); };
+
+  // Pixels of the class image, to answer a click and to hide classes. A browser that refuses to
+  // read them (a page opened from disk, for example) keeps the map and disables only these two.
+  let pixels = null;
+  const img = new Image();
+  img.onload = () => {
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width; canvas.height = img.height;
+      const ctx2d = canvas.getContext("2d", { willReadFrequently: true });
+      ctx2d.drawImage(img, 0, 0);
+      pixels = ctx2d.getImageData(0, 0, img.width, img.height);
+    } catch (error) {
+      pixels = null;
+    }
+    render();
+  };
+  img.src = L.classes;
+
+  const colourToCode = new Map(Object.entries(DATA.palette)
+    .filter(([, c]) => c[3] > 0).map(([code, c]) => [c.slice(0, 3).join(","), +code]));
+
+  function repaint() {
+    if (!pixels) return;
+    if (!hidden.size) { map.getSource("severity").updateImage({ url: L.classes, coordinates: C }); return; }
+    const out = new ImageData(new Uint8ClampedArray(pixels.data), pixels.width, pixels.height);
+    const d = out.data;
+    for (let i = 0; i < d.length; i += 4) {
+      if (d[i + 3] && hidden.has(colourToCode.get(`${d[i]},${d[i + 1]},${d[i + 2]}`))) d[i + 3] = 0;
+    }
+    const c = document.createElement("canvas");
+    c.width = out.width; c.height = out.height;
+    c.getContext("2d").putImageData(out, 0, 0);
+    map.getSource("severity").updateImage({ url: c.toDataURL(), coordinates: C });
+  }
+
+  // Web Mercator: the image is linear in x and y of EPSG:3857 between its corners.
+  const mx = (lon) => lon * Math.PI / 180;
+  const my = (lat) => Math.log(Math.tan(Math.PI / 4 + lat * Math.PI / 360));
+  map.on("click", (e) => {
+    if (!pixels) return;
+    const fx = (mx(e.lngLat.lng) - mx(C[0][0])) / (mx(C[1][0]) - mx(C[0][0]));
+    const fy = (my(C[0][1]) - my(e.lngLat.lat)) / (my(C[0][1]) - my(C[3][1]));
+    if (fx < 0 || fx >= 1 || fy < 0 || fy >= 1) return;
+    const i = (Math.floor(fy * pixels.height) * pixels.width + Math.floor(fx * pixels.width)) * 4;
+    const d = pixels.data;
+    const code = d[i + 3] ? colourToCode.get(`${d[i]},${d[i + 1]},${d[i + 2]}`) : undefined;
+    const html = code === undefined || hidden.has(code)
+      ? T[lang].pop_none
+      : `<span class="pop-sw" style="background:${rgb(code)}"></span>${esc(className(code))}`;
+    if (popup) popup.remove();
+    popup = new maplibregl.Popup({ closeButton: false, maxWidth: "260px" }).setLngLat(e.lngLat).setHTML(html).addTo(map);
+  });
+  map.on("mousemove", () => { map.getCanvas().style.cursor = "crosshair"; });
+
+  // Cities as HTML markers (no font server needed).
+  const markers = DATA.places.map(p => {
+    const el = document.createElement("div");
+    el.className = "city"; el.textContent = p.name;
+    return new maplibregl.Marker({ element: el, anchor: "left", offset: [-6, 0] }).setLngLat(p.lonlat);
+  });
+  function toggleCities() { markers.forEach(m => citiesOn ? m.addTo(map) : m.remove()); }
+  map.on("load", toggleCities);
+
+  // True colour: "before" underneath, "after" faded in on top by the control.
+  const fade = document.getElementById("fade");
+  document.getElementById("cb-truecolour").addEventListener("change", (e) => {
+    trueColourOn = e.target.checked;
+    fade.disabled = !trueColourOn;
+    setVisible("before", trueColourOn);
+    setVisible("after", trueColourOn);
+  });
+  fade.addEventListener("input", () => { map.setPaintProperty("after", "raster-opacity", fade.value / 100); });
+
+  const slider = document.getElementById("opacity");
+  slider.addEventListener("input", () => {
+    document.getElementById("opacity-v").textContent = slider.value + " %";
+    map.setPaintProperty("severity", "raster-opacity", slider.value / 100);
+  });
+  document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => { lang = b.dataset.lang; render(); }));
+  render();
+</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "severidad"
+dynamic = ["version"]
+description = "Reproducible burn severity mapping (Sentinel-2 dNBR) of the February 2024 Vina del Mar fire, validated against Copernicus EMS"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Camilo Lopez Barra" }]
+requires-python = ">=3.12"
+# Exact versions used to produce and verify the published results.
+dependencies = [
+    "numpy==2.5.1",
+    "scipy==1.18.0",
+    "rasterio==1.5.0",
+    "pyproj==3.7.2",
+    "shapely==2.1.2",
+    "pyogrio==0.13.0",
+    "matplotlib==3.11.1",
+]
+
+[project.optional-dependencies]
+notebooks = [
+    "jupyterlab==4.6.5",
+    "nbclient==0.11.0",
+    "nbformat==5.11.1",
+    "ipykernel==7.4.0",
+]
+dev = [
+    "pytest==9.2.0",
+    "pytest-cov==7.1.0",
+    "ruff==0.17.3",
+    "mypy==2.4.1",
+]
+# cffconvert (CITATION.cff validation) needs jsonschema<4, which breaks the notebook tools:
+# run it in its own environment, e.g. `pipx run cffconvert==2.0.0 --validate`.
+
+[tool.setuptools.dynamic]
+version = { attr = "severidad.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "UP", "SIM", "RUF", "ANN", "PTH", "S"]
+ignore = ["ANN401"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "ANN"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src/severidad"]
+
+[[tool.mypy.overrides]]
+module = ["rasterio.*", "scipy.*", "shapely.*", "pyogrio.*", "affine.*"]
+ignore_missing_imports = true

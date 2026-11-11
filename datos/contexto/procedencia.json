@@ -1,0 +1,48 @@
+{
+ "note": "Context layers for the maps, derived by severidad.contexto. Not part of the severity result; they only help to read it.",
+ "attribution": {
+  "dem": "Relief produced using Copernicus WorldDEM-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved",
+  "natural_earth": "Made with Natural Earth (public domain)",
+  "geonames": "City names and positions: GeoNames (geonames.org), CC BY 4.0",
+  "water": "Contains modified Copernicus Sentinel data 2024",
+  "worldcover": "© ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium"
+ },
+ "hashes": "sha256 of the file bytes, except datos/clases.tif and the rasters written here: content hash (severidad.calculo.content_hash; dtype, shape, CRS, transform and pixels), because GeoTIFF compression gives different bytes on Windows and Linux",
+ "inputs": {
+  "datos/clases.tif": "ef09b76717fc2855e0fcaf1cd939ecf2e69e6ea7ea416c9f4618e050244f6902",
+  "datos_crudos/S2B_19HBD_20240118_0_L2A/scl.tif": "d5e9eefcaa32a536f8578160fbfcbc55d538394b04f4dc12ee4dfffa8a72872b",
+  "datos_crudos/S2A_19HBD_20240212_0_L2A/scl.tif": "211f2190a47c0055bc60d388ebd938f44b4741406b030a5689b9770472c89717",
+  "datos_crudos/contexto/ne_50m_admin_0_countries.zip": "5fed433373581fa648920435f937d95f2d3c0200e067409c6478dcdf1b853139",
+  "datos_crudos/contexto/CL.zip": "305cffd26f68ea1e4644a5e58f5fe7c95fb160a04a2375204ea5677383697e28",
+  "datos_crudos/contexto/Copernicus_DSM_COG_10_S34_00_W072_00_DEM.tif": "41d64133c16b5704183212363bf0d2e735f36d1003491e5c28c3a52bd00dbc89",
+  "datos_crudos/contexto/Copernicus_DSM_COG_10_S33_00_W072_00_DEM.tif": "48f07f28c59fcd6bef15ba194e2be2b3c72ae52e75ecf33c316d0f083d8183e7",
+  "datos_crudos/contexto/ESA_WorldCover_10m_2021_v200_S36W072_Map.tif": "a789e8c63df3413128b9b0245df34d6100c8b4a06c2d80721e900e4685d8dd14",
+  "datos_crudos/contexto/ESA_WorldCover_10m_2021_v200_S33W072_Map.tif": "d6f02e9a92c4713b586a0b660503952f52064cef432e095069fa7f8c2f309aeb"
+ },
+ "places": [
+  "Quilpué",
+  "Valparaíso",
+  "Villa Alemana",
+  "Viña del Mar"
+ ],
+ "outputs": {
+  "relieve.tif": "203686d170a6e3e5304592d305855dc7e860100a3d4caa4496812ef47d4dfa10",
+  "agua.tif": "c1df6de6157e66651ab20c07bc74af3a93366962415d40b84ce4f3cd0742c18f",
+  "construido.tif": "a6c2a7178a89e59da850dac2e8b14babe195fa73e6b7966a9ce88404a82c6bb0",
+  "lugares.geojson": "57c8804850084e526410c7504c226fa1deca451687fdd52f8d4a1fd9b020dd52",
+  "chile.geojson": "da3ed2d2060fe4770c0f71c5cc2f03c94f044f323cb090585ea6e1a8387e5310"
+ },
+ "water_classes": {
+  "0": "land",
+  "1": "sea",
+  "2": "inland water"
+ },
+ "built_up": {
+  "0": "not built-up",
+  "1": "built-up (ESA WorldCover 2021 v200, class 50)",
+  "resampling": "nearest neighbour from 10 m to the grid of datos/clases.tif",
+  "pixels_without_worldcover_data": 0,
+  "use": "reference outline on the maps only; no figure is computed with it"
+ },
+ "relief": "hillshade, azimuth 315, altitude 45, vertical exaggeration 1.5; 0 = no data"
+}

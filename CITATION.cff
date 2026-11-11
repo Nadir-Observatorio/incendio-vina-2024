@@ -1,0 +1,96 @@
+cff-version: 1.2.0
+message: "If you use this code or its derived data, please cite it as below."
+title: "Burn severity of the Viña del Mar fire, February 2024: reproducible dNBR mapping with Sentinel-2 and validation against Copernicus EMS"
+type: software
+authors:
+  - family-names: "López Barra"
+    given-names: "Camilo"
+license: MIT
+repository-code: "https://github.com/Nadir-Observatorio/incendio-vina-2024"
+url: "https://nadir-observatorio.github.io/incendio-vina-2024/"
+date-released: "2026-11-11"
+keywords:
+  - burn severity
+  - dNBR
+  - Sentinel-2
+  - wildfire
+  - Chile
+  - Copernicus EMS
+  - accuracy assessment
+references:
+  - type: report
+    title: "Landscape assessment (LA): sampling and analysis methods"
+    authors:
+      - family-names: "Key"
+        given-names: "Carl H."
+      - family-names: "Benson"
+        given-names: "Nathan C."
+    year: 2006
+    collection-title: "FIREMON: Fire effects monitoring and inventory system"
+    publisher:
+      name: "USDA Forest Service, Rocky Mountain Research Station"
+    number: "RMRS-GTR-164-CD"
+  - type: article
+    title: "Mean composite fire severity metrics computed with Google Earth Engine offer improved accuracy and expanded mapping potential"
+    authors:
+      - family-names: "Parks"
+        given-names: "Sean A."
+      - family-names: "Holsinger"
+        given-names: "Lisa M."
+      - family-names: "Voss"
+        given-names: "Morgan A."
+      - family-names: "Loehman"
+        given-names: "Rachel A."
+      - family-names: "Robinson"
+        given-names: "Nathaniel P."
+    year: 2018
+    journal: "Remote Sensing"
+    volume: 10
+    issue: 6
+    start: 879
+    doi: "10.3390/rs10060879"
+  - type: article
+    title: "Good practices for estimating area and assessing accuracy of land change"
+    authors:
+      - family-names: "Olofsson"
+        given-names: "Pontus"
+      - family-names: "Foody"
+        given-names: "Giles M."
+      - family-names: "Herold"
+        given-names: "Martin"
+      - family-names: "Stehman"
+        given-names: "Stephen V."
+      - family-names: "Woodcock"
+        given-names: "Curtis E."
+      - family-names: "Wulder"
+        given-names: "Michael A."
+    year: 2014
+    journal: "Remote Sensing of Environment"
+    volume: 148
+    start: 42
+    end: 57
+    doi: "10.1016/j.rse.2014.02.015"
+  - type: article
+    title: "Probable inference, the law of succession, and statistical inference"
+    authors:
+      - family-names: "Wilson"
+        given-names: "Edwin B."
+    year: 1927
+    journal: "Journal of the American Statistical Association"
+    volume: 22
+    issue: 158
+    start: 209
+    end: 212
+    doi: "10.1080/01621459.1927.10502953"
+  - type: data
+    title: "[EMSR715] Wildfire in Valparaiso region, Chile: Valparaiso (AOI01) Delineation Map, version 2"
+    authors:
+      - name: "Copernicus Emergency Management Service (© 2024 European Union)"
+    year: 2024
+    url: "https://mapping.emergency.copernicus.eu/activations/EMSR715"
+  - type: data
+    title: "[EMSN188] Post-wildfire damage assessment in Valparaiso region, Chile: P08 Detailed damage assessment"
+    authors:
+      - name: "Copernicus Emergency Management Service (© 2024 European Union)"
+    year: 2024
+    url: "https://mapping.emergency.copernicus.eu/activations/EMSN188"

@@ -1,0 +1,33 @@
+municipality,class_code,class_name,hectares
+Valparaíso,0,No data,280.12
+Valparaíso,1,"Enhanced regrowth, high",3.00
+Valparaíso,2,"Enhanced regrowth, low",56.32
+Valparaíso,3,Unburned,21520.84
+Valparaíso,4,Low severity,1656.20
+Valparaíso,5,Moderate-low severity,1154.44
+Valparaíso,6,Moderate-high severity,797.96
+Valparaíso,7,High severity,330.80
+Viña del Mar,0,No data,74.64
+Viña del Mar,1,"Enhanced regrowth, high",3.48
+Viña del Mar,2,"Enhanced regrowth, low",36.72
+Viña del Mar,3,Unburned,7665.48
+Viña del Mar,4,Low severity,865.68
+Viña del Mar,5,Moderate-low severity,815.92
+Viña del Mar,6,Moderate-high severity,990.36
+Viña del Mar,7,High severity,589.12
+Quilpué,0,No data,29.68
+Quilpué,1,"Enhanced regrowth, high",0.76
+Quilpué,2,"Enhanced regrowth, low",13.36
+Quilpué,3,Unburned,22161.00
+Quilpué,4,Low severity,650.96
+Quilpué,5,Moderate-low severity,556.08
+Quilpué,6,Moderate-high severity,595.56
+Quilpué,7,High severity,371.00
+Villa Alemana,0,No data,3.00
+Villa Alemana,1,"Enhanced regrowth, high",0.00
+Villa Alemana,2,"Enhanced regrowth, low",5.16
+Villa Alemana,3,Unburned,7796.92
+Villa Alemana,4,Low severity,730.44
+Villa Alemana,5,Moderate-low severity,361.48
+Villa Alemana,6,Moderate-high severity,139.96
+Villa Alemana,7,High severity,57.00

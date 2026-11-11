@@ -1,0 +1,16 @@
+{
+  "classes_content_sha256": "ef09b76717fc2855e0fcaf1cd939ecf2e69e6ea7ea416c9f4618e050244f6902",
+  "note": "content hash = sha256 of dtype, shape, CRS, transform and pixels (severidad.calculo.content_hash); identical on Windows and Linux",
+  "scenes": {
+    "S2B_19HBD_20240118_0_L2A": {
+      "nir08": "7691c4e817235ec1c63cc7e7275bbb603054f8a2f46daa78f365772f1c31203c",
+      "swir22": "cec5f4c887390075c9b903b64ab6ee3738744302d174c73191dfcbadc5faa38b",
+      "scl": "d5e9eefcaa32a536f8578160fbfcbc55d538394b04f4dc12ee4dfffa8a72872b"
+    },
+    "S2A_19HBD_20240212_0_L2A": {
+      "nir08": "9ffc44769c3f14732957dd34d5c7a284526612da7f188e6619978a4c0a34d442",
+      "swir22": "fcd2c072d65cf310c1b14a7779f66a0faf90497bbe55f22cbb9d96aea9f1d5be",
+      "scl": "211f2190a47c0055bc60d388ebd938f44b4741406b030a5689b9770472c89717"
+    }
+  }
+}
