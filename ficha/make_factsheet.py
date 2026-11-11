@@ -69,11 +69,10 @@ TEXT = {
         "title": "Burn severity of the Viña del Mar fire, February 2024",
         "subtitle": "Valparaíso, Viña del Mar, Quilpué and Villa Alemana, Chile  ·  Sentinel-2 "
                     "dNBR, validated against Copernicus EMS\nCamilo López Barra, geographer",
-        "headline": "burned at moderate-low severity or higher, within a range up to\n{rng} ha if "
-                    "low "
-                    "severity is included. Copernicus EMSR715 delineated\n{ref} ha in the same "
-                    "area, "
-                    "inside the range.",
+        "headline": "burned according to the dNBR threshold calibrated locally\nagainst "
+                    "Copernicus EMSR715 ({thr}; 95 % interval {lo} to {hi} ha).\nEMSR715: {ref} "
+                    "ha. The rule fixed before measuring gave\n{b} ha, within a range up to {rng} "
+                    "ha (page 2).",
         "ocean": "Pacific\nOcean", "scale": "1:{s} printed on A4", "map_area": "Map\narea",
         "legend": "SEVERITY (Key and Benson 2006, limits not calibrated for central Chile)",
         "classes": {7: "High", 6: "Moderate-high", 5: "Moderate-low", 4: "Low"},
@@ -90,10 +89,12 @@ TEXT = {
         "table_title": "BURNED AREA BY MUNICIPALITY (ha)",
         "table_cols": ["Municipality", "Low", "Moderate-low", "Moderate-high", "High",
                        "Moderate-low\nor higher", "All burned\nclasses"],
-        "validation": "VALIDATION IN BRIEF",
-        "tiles": ["area-weighted accuracy\nagainst EMSR715", "commission\n({a} with low severity)",
-                  "area-weighted omission\n({a} with low severity)",
-                  "of damaged buildings\n(EMSN188) in any burned class"],
+        "tiles": ["accuracy against EMSR715\n(original rule: {b} and {a})",
+                  "commission\n(original rule: {b} and {a})",
+                  "omission\n(original rule: {b} and {a})",
+                  "of damaged buildings (EMSN188)\nin burned ({a} with all classes)"],
+        "validation_cal": "VALIDATION OF THE CALIBRATED THRESHOLD ON BLOCKS THAT TOOK NO PART "
+                          "IN THE FIT",
         "attribution": "Contains modified Copernicus Sentinel data 2024. Validation: Copernicus "
                        "Emergency "
                        "Management Service (© 2024 European Union), EMSR715 and EMSN188. Relief: "
@@ -126,7 +127,7 @@ TEXT = {
             "rebuilt "
             "from scratch on Windows and Linux.",
         ],
-        "val_heading": "Validation (protocol and headline rule fixed before measuring)",
+        "val_heading": "Validation of the original rule (protocol fixed before measuring)",
         "m1": "M1, omission in the urban interface: {n} of the {u} building damage points of "
               "Copernicus "
               "EMSN188 (Pléiades Neo, 0.3 m, 'Las Tablas' area), drawn with seed {seed} and at "
@@ -143,11 +144,16 @@ TEXT = {
         "m2_cols": ["Threshold", "Predicted burned (ha)", "Area-weighted accuracy",
                     "Commission (Wilson 95 %)", "Area-weighted omission"],
         "thr": {"B": "Moderate-low or higher", "A": "All burned classes"}, "to": "to",
-        "rule": "Headline rule: publish the threshold with the higher area-weighted accuracy and "
-                "the "
-                "other as the range. Moderate-low or higher won by {d} points. EMSR715 used "
-                "Sentinel-2 as "
-                "its pre-event reference, so it is mostly, not fully, independent of this map.",
+        "cal_heading": "Local calibration of the threshold (amendment of {date})",
+        "cal": "Against EMSR715, the burned / unburned cut was calibrated on 2 km blocks ({nf} "
+               "to fit, {nv} to validate, without the M2 pixels): dNBR threshold {thr} ({t0} to "
+               "{t1}). On validation: accuracy {acc}, commission {com}, omission {om}, area "
+               "difference {da} against {bda} for the original rule; EMSN188 buildings in burned: "
+               "{e} of {n}. Protocol fixed before computing; making it the headline was decided "
+               "after seeing the results (README.md).",
+        "rule": "Original rule: publish the threshold with the higher area-weighted accuracy and "
+                "the other as the range; moderate-low or higher won by {d} points. EMSR715 used "
+                "Sentinel-2 as its pre-event reference, so it is mostly, not fully, independent.",
         "lim_heading": "Limitations",
         "lims": [
             "O1. Vegetation, not buildings. About {o1} % of the buildings mapped as damaged by "
@@ -156,11 +162,9 @@ TEXT = {
             "building "
             "damage needs very high resolution imagery.",
             "O2. Low severity adds commission. Including it raises commission from {cb} to {ca}; "
-            "leaving "
-            "it out raises omission from {oa} to {ob}. Hence a range.",
+            "leaving it out raises omission from {oa} to {ob}. Hence the calibration above.",
             "O3. Uncalibrated classes. Key and Benson limits were defined for North American "
-            "ecosystems; "
-            "no field severity plots were available for central Chile.",
+            "ecosystems; no field severity plots were available for central Chile.",
             "O4. Catalogue offset. The Earth Search COGs of these scenes do not carry the +1000 "
             "offset "
             "their STAC metadata declares; applying it roughly doubles the burned area.",
@@ -168,11 +172,6 @@ TEXT = {
             "structures); no figure uses it. It misses later settlements and can under-represent "
             "scattered self-built housing.",
         ],
-        "rep_heading": "Reproduce",
-        "rep": "Notebook 01 rebuilds the map from scratch and checks its hash; notebook 02 "
-               "recomputes M1 "
-               "and M2; severidad.contexto rebuilds the context layers of the map. Details in "
-               "README.md.",
         "refs_heading": "References",
     },
     "es": {
@@ -180,10 +179,10 @@ TEXT = {
         "title": "Severidad del incendio de Viña del Mar, febrero de 2024",
         "subtitle": "Valparaíso, Viña del Mar, Quilpué y Villa Alemana, Chile  ·  dNBR "
                     "Sentinel-2, validado con Copernicus EMS\nCamilo López Barra, geógrafo",
-        "headline": "quemadas con severidad moderada-baja o mayor, en un rango de hasta\n{rng} ha "
-                    "si se "
-                    "incluye la severidad baja. Copernicus EMSR715 delimitó\n{ref} ha en la misma "
-                    "zona, dentro del rango.",
+        "headline": "quemadas según el umbral dNBR calibrado localmente con\nCopernicus "
+                    "EMSR715 ({thr}; intervalo del 95 %: {lo} a {hi} ha).\nEMSR715: {ref} ha. La "
+                    "regla fijada antes de medir daba\n{b} ha, con un rango de hasta {rng} ha "
+                    "(página 2).",
         "ocean": "Océano\nPacífico",
         "scale": "1:{s} impreso en A4",
         "map_area": "Área del\nmapa",
@@ -203,11 +202,12 @@ TEXT = {
         "table_title": "SUPERFICIE QUEMADA POR COMUNA (ha)",
         "table_cols": ["Comuna", "Baja", "Moderada-baja", "Moderada-alta", "Alta",
                        "Moderada-baja\no mayor", "Todas las\nclases"],
-        "validation": "VALIDACIÓN EN BREVE",
-        "tiles": ["exactitud ponderada por área\nfrente a EMSR715",
-                  "comisión\n({a} con severidad baja)",
-                  "omisión ponderada por área\n({a} con severidad baja)",
-                  "de las edificaciones dañadas\n(EMSN188) en alguna clase quemada"],
+        "tiles": ["exactitud frente a EMSR715\n(regla original: {b} y {a})",
+                  "comisión\n(regla original: {b} y {a})",
+                  "omisión\n(regla original: {b} y {a})",
+                  "de las edificaciones dañadas\n(EMSN188) en quemado ({a} con todas)"],
+        "validation_cal": "VALIDACIÓN DEL UMBRAL CALIBRADO EN BLOQUES QUE NO PARTICIPARON DEL "
+                          "AJUSTE",
         "attribution": "Contiene datos modificados de Copernicus Sentinel 2024. Validación: "
                        "Copernicus "
                        "Emergency Management Service (© 2024 Unión Europea), EMSR715 y EMSN188. "
@@ -240,8 +240,7 @@ TEXT = {
             "Reproducibilidad: la huella de contenido del ráster de clases ({h}...) es idéntica al "
             "rehacerlo desde cero en Windows y en Linux.",
         ],
-        "val_heading": "Validación (protocolo y regla de la cifra principal fijados antes de "
-                       "medir)",
+        "val_heading": "Validación de la regla original (protocolo fijado antes de medir)",
         "m1": "M1, omisión en la interfaz urbana: {n} de los {u} puntos de daño a edificaciones de "
               "Copernicus EMSN188 (Pléiades Neo, 0,3 m, área 'Las Tablas'), sorteados con semilla "
               "{seed} y a 100 m o más entre sí. {pa} cae en alguna clase quemada (Wilson 95 %: "
@@ -257,12 +256,16 @@ TEXT = {
         "m2_cols": ["Umbral", "Quemado predicho (ha)", "Exactitud ponderada",
                     "Comisión (Wilson 95 %)", "Omisión ponderada"],
         "thr": {"B": "Moderada-baja o mayor", "A": "Todas las clases quemadas"}, "to": "a",
-        "rule": "Regla de la cifra principal: publicar el umbral con mayor exactitud ponderada "
-                "por área "
-                "y el otro como rango. Moderada-baja o mayor ganó por {d} puntos. EMSR715 usó "
-                "Sentinel-2 como referencia previa al evento, así que es independiente de este "
-                "mapa en "
-                "buena parte, no del todo.",
+        "cal_heading": "Calibración local del umbral (enmienda del {date})",
+        "cal": "Contra EMSR715 se calibró el corte quemado / no quemado en bloques de 2 km "
+               "({nf} de ajuste, {nv} de validación, sin los píxeles de M2): umbral dNBR {thr} "
+               "({t0} a {t1}). En validación: exactitud {acc}, comisión {com}, omisión {om}, "
+               "diferencia de área {da} frente a {bda} de la regla original; edificaciones de "
+               "EMSN188 en quemado: {e} de {n}. Protocolo fijado antes de calcular; su uso como "
+               "cifra principal se decidió después de ver los resultados (README.md).",
+        "rule": "Regla original: publicar el umbral con mayor exactitud ponderada y el otro "
+                "como rango; ganó moderada-baja o mayor por {d} puntos. EMSR715 usó Sentinel-2 "
+                "como referencia previa, así que es independiente de este mapa en buena parte.",
         "lim_heading": "Limitaciones",
         "lims": [
             "O1. Vegetación, no edificaciones. Cerca del {o1} % de las edificaciones que EMSN188 "
@@ -271,11 +274,9 @@ TEXT = {
             "vegetación, "
             "y el daño a edificaciones exige imágenes de muy alta resolución.",
             "O2. La severidad baja suma comisión. Incluirla sube la comisión de {cb} a {ca}; "
-            "dejarla "
-            "fuera sube la omisión de {oa} a {ob}. Por eso se publica un rango.",
+            "dejarla fuera sube la omisión de {oa} a {ob}. Por eso la calibración de arriba.",
             "O3. Clases sin calibrar. Los límites de Key y Benson se definieron para ecosistemas "
-            "de "
-            "Norteamérica; no hubo parcelas de severidad en terreno para Chile central.",
+            "de Norteamérica; no hubo parcelas de severidad en terreno para Chile central.",
             "O4. Desplazamiento del catálogo. Los COG de Earth Search de estas escenas no traen el "
             "desplazamiento de +1000 que declaran sus metadatos STAC; aplicarlo duplica "
             "aproximadamente el "
@@ -284,11 +285,6 @@ TEXT = {
             "edificios, caminos, estructuras); ninguna cifra lo usa. No incluye lo posterior y "
             "puede subrepresentar la autoconstrucción dispersa.",
         ],
-        "rep_heading": "Reproducir",
-        "rep": "El cuaderno 01 rehace el mapa desde cero y verifica su huella; el cuaderno 02 "
-               "recalcula M1 y "
-               "M2; severidad.contexto rehace las capas de contexto del mapa. Detalles en "
-               "README.es.md.",
         "refs_heading": "Referencias",
     },
 }
@@ -363,7 +359,9 @@ def load() -> dict:
     cities = [(f["properties"]["NAME"], shp_transform(to_utm, shape(f["geometry"])))
               for f in lugares["features"]]
     countries = json.loads((CONTEXT / "chile.geojson").read_text(encoding="utf-8"))
-    return {"metrics": metrics, "hashes": hashes, "areas": dict(areas), "classes": classes,
+    adjustment = json.loads((DATA / "ajuste_umbrales.json").read_text(encoding="utf-8"))
+    return {"metrics": metrics, "adjustment": adjustment, "hashes": hashes,
+            "areas": dict(areas), "classes": classes,
             "extent": (b.left, b.right, b.bottom, b.top), "crs": crs, "water": rasters["agua"],
             "relief": rasters["relieve"], "built": rasters["construido"], "cities": cities,
             "countries": countries}
@@ -501,20 +499,29 @@ def swatch(fig: Figure, x: float, y: float, colour: Any, label: str) -> float:
 def page_results(pdf: PdfPages, d: dict, lang: str) -> None:
     T = TEXT[lang]
     metrics = d["metrics"]
-    m1, m2, head = metrics["measurement_1"], metrics["measurement_2"], metrics["headline"]
+    m2, head = metrics["measurement_2"], metrics["headline"]
     ext = d["extent"]
     fig = plt.figure(figsize=A4)
     fig.text(0.07, 0.962, T["title"], fontsize=16.5, weight="bold", color=INK, va="top")
     fig.text(0.07, 0.934, T["subtitle"], fontsize=7.8, color=SOFT, va="top", linespacing=1.35)
     fig.add_artist(Rectangle((0.07, 0.851), 0.005, 0.053, color=ACCENT, transform=fig.transFigure))
     # One decimal, as in datos/metricas.json, the table below and the web viewer.
-    big = fig.text(0.085, 0.904, f"{num(head['hectares'], lang, 1)} ha", fontsize=27,
+    adj = d["adjustment"]
+    chosen = adj["chosen"]
+    big = fig.text(0.085, 0.904, f"{num(chosen['hectares'], lang, 1)} ha", fontsize=27,
                    weight="bold", color=INK, va="top")
     right = big.get_window_extent(fig.canvas.get_renderer()).x1 / fig.bbox.width
-    fig.text(max(0.355, right + 0.025), 0.901,
-             T["headline"].format(rng=num(head["range_up_to_hectares"], lang, 1),
-                                  ref=num(m2["reference_burned_ha"], lang, 1)),
-             fontsize=8.6, color=INK, va="top", linespacing=1.4)
+    lead = fig.text(max(0.355, right + 0.025), 0.901,
+                    T["headline"].format(thr=chosen["threshold"],
+                                         lo=num(chosen["hectares_interval"][0], lang, 1),
+                                         hi=num(chosen["hectares_interval"][1], lang, 1),
+                                         ref=num(m2["reference_burned_ha"], lang, 1),
+                                         b=num(head["hectares"], lang, 1),
+                                         rng=num(head["range_up_to_hectares"], lang, 1)),
+                    fontsize=8.4, color=INK, va="top", linespacing=1.3)
+    edge = lead.get_window_extent(fig.canvas.get_renderer()).x1 / fig.bbox.width
+    if edge > 0.93:
+        raise ValueError(f"headline text overflows the right margin (x = {edge:.3f})")
 
     height = 0.86 * (ext[3] - ext[2]) / (ext[1] - ext[0]) * A4[0] / A4[1]
     draw_map(fig, [0.07, 0.832 - height, 0.86, height], d, T, lang)
@@ -555,8 +562,7 @@ def page_results(pdf: PdfPages, d: dict, lang: str) -> None:
         cell.set_edgecolor(LINE)
         cell.set_linewidth(0.6)
         if r == 0:
-            cell.set_text_props(color=ACCENT if c == 5 else SOFT, fontsize=6.6,
-                                weight="bold" if c == 5 else "normal")
+            cell.set_text_props(color=SOFT, fontsize=6.6)
             cell.set_height(cell.get_height() * 1.55)
         if c == 0:
             cell._loc = "left"
@@ -567,16 +573,17 @@ def page_results(pdf: PdfPages, d: dict, lang: str) -> None:
     # Validation goes below the real bottom of the table, measured on the drawn figure.
     renderer = fig.canvas.get_renderer()
     bottom = table.get_window_extent(renderer).y0 / fig.bbox.height
-    yv = heading(fig, 0.07, bottom - 0.018, T["validation"])
+    yv = heading(fig, 0.07, bottom - 0.018, T["validation_cal"])
     if yv - 0.062 < 0.050:
         raise ValueError(f"page 1 validation overflows into the footer (y = {yv - 0.062:.3f})")
-    b, a = m2["B"], m2["A"]
-    tiles = [(pct(b["weighted_accuracy_pct"], lang), T["tiles"][0]),
-             (pct(b["commission_pct"], lang),
-              T["tiles"][1].format(a=pct(a["commission_pct"], lang))),
-             (pct(b["weighted_omission_pct"], lang),
-              T["tiles"][2].format(a=pct(a["weighted_omission_pct"], lang))),
-             (pct(m1["A"]["pct"], lang), T["tiles"][3])]
+    v = adj["indices"][chosen["index"]]["validation"]
+    pub = adj["published_thresholds_on_validation"]
+    e = adj["emsn188"]
+    tiles = [(pct(v[k], lang), T["tiles"][i].format(b=pct(pub["B"][k], lang),
+                                                    a=pct(pub["A"][k], lang)))
+             for i, k in enumerate(("accuracy_pct", "commission_pct", "omission_pct"))]
+    tiles.append((pct(e[chosen["index"]]["pct"], lang),
+                  T["tiles"][3].format(a=pct(e["A"]["pct"], lang))))
     for i, (big, small) in enumerate(tiles):
         x = 0.07 + i * 0.215
         fig.text(x, yv, big, fontsize=15, weight="bold", color=INK, va="top")
@@ -605,9 +612,9 @@ def page_method(pdf: PdfPages, d: dict, lang: str) -> None:
     y = paragraph(fig, 0.07, y, T["m1"].format(
         n=m1["sample"], u=num(m1["universe"], lang), seed=p["seed"], pa=pct(m1["A"]["pct"], lang),
         wa0=num(m1["A"]["wilson"][0], lang, 1), wa1=num(m1["A"]["wilson"][1], lang, 1),
-        pb=pct(m1["B"]["pct"], lang)), 124)
+        pb=pct(m1["B"]["pct"], lang)), 128)
     y = paragraph(fig, 0.07, y, T["m2"].format(dom=num(m2["domain_ha"], lang, 1),
-                                                ref=num(m2["reference_burned_ha"], lang, 1)), 124)
+                                                ref=num(m2["reference_burned_ha"], lang, 1)), 128)
     tax = fig.add_axes([0.07, y - 0.085, 0.86, 0.08])
     tax.axis("off")
     rows = []
@@ -634,7 +641,27 @@ def page_method(pdf: PdfPages, d: dict, lang: str) -> None:
             cell.set_text_props(color=SOFT, fontsize=6.8)
     y -= 0.075
     diff = round(m2["B"]["weighted_accuracy_pct"] - m2["A"]["weighted_accuracy_pct"], 1)
-    y = paragraph(fig, 0.07, y, T["rule"].format(d=num(diff, lang, 1)), 124)
+    y = paragraph(fig, 0.07, y, T["rule"].format(d=num(diff, lang, 1)), 128)
+
+    adj = d["adjustment"]
+    c = adj["chosen"]
+    v = adj["indices"][c["index"]]["validation"]
+    pub = adj["published_thresholds_on_validation"]
+    e = adj["emsn188"]
+    day = "-".join(reversed(adj["date"].split("-"))) if lang == "es" else adj["date"]
+    y = paragraph(fig, 0.07, y - 0.004, T["cal_heading"].format(date=day) + ". " + T["cal"].format(
+        nf=adj["domain"]["fit_blocks"], nv=adj["domain"]["validation_blocks"],
+        thr=c["threshold"], t0=c["threshold_interval"][0], t1=c["threshold_interval"][1],
+        acc=pct(v["accuracy_pct"], lang), a0=num(v["accuracy_interval"][0], lang, 1),
+        a1=num(v["accuracy_interval"][1], lang, 1), com=pct(v["commission_pct"], lang),
+        om=pct(v["omission_pct"], lang), da=pct(v["area_difference_pct"], lang),
+        d0=num(v["area_difference_interval"][0], lang, 1),
+        d1=num(v["area_difference_interval"][1], lang, 1),
+        bda=pct(pub["B"]["area_difference_pct"], lang),
+        ada=pct(pub["A"]["area_difference_pct"], lang),
+        e=pct(e[c["index"]]["pct"], lang), n=e["sample"],
+        e0=num(e[c["index"]]["wilson"][0], lang, 1), e1=num(e[c["index"]]["wilson"][1], lang, 1)),
+        128)
 
     y = heading(fig, 0.07, y - 0.006, T["lim_heading"])
     fill = {"o1": round(100 - m1["A"]["pct"]), "cb": pct(m2["B"]["commission_pct"], lang),
@@ -642,10 +669,8 @@ def page_method(pdf: PdfPages, d: dict, lang: str) -> None:
             "oa": pct(m2["A"]["weighted_omission_pct"], lang),
             "ob": pct(m2["B"]["weighted_omission_pct"], lang)}
     for s in T["lims"]:
-        y = paragraph(fig, 0.07, y, s.format(**fill), 124)
+        y = paragraph(fig, 0.07, y, s.format(**fill), 128)
 
-    y = heading(fig, 0.07, y - 0.006, T["rep_heading"])
-    y = paragraph(fig, 0.07, y, T["rep"], 124)
     y = heading(fig, 0.07, y - 0.006, T["refs_heading"])
     for r in REFERENCES:
         y = paragraph(fig, 0.07, y, r, 142, size=6.8)

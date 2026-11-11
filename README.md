@@ -11,7 +11,9 @@
 <!-- resultados: los escribe herramientas/escribir_readme.py desde datos/; no se editan a mano -->
 ## Resultados
 
-**6.759,7 ha se quemaron con severidad moderada baja o mayor**, dentro de un rango que llega a 10.663,0 ha si se incluye la severidad baja. Copernicus EMSR715 delimitó 8.600,5 ha en la misma área, dentro de ese rango.
+**9.211,9 ha quemadas** según el umbral dNBR calibrado localmente con Copernicus EMSR715 (151; intervalo bootstrap del 95 %: 8.634,5 a 9.582,1 ha). EMSR715 delimitó 8.600,5 ha en la misma área.
+
+La regla fijada antes de medir daba 6.759,7 ha con severidad moderada baja o mayor, en un rango de hasta 10.663,0 ha si se incluye la severidad baja. Se conserva como registro en [`datos/metricas.json`](datos/metricas.json); el cambio de cifra principal se explica abajo (enmienda del 11-11-2026).
 
 | Comuna | Baja | Moderada baja | Moderada alta | Alta | Moderada baja o más | Todas las clases quemadas |
 |---|---:|---:|---:|---:|---:|---:|
@@ -21,11 +23,35 @@
 | Villa Alemana | 730,4 | 361,5 | 140,0 | 57,0 | 558,4 | 1.288,9 |
 | **Total** | **3.903,3** | **2.887,9** | **2.523,8** | **1.347,9** | **6.759,7** | **10.663,0** |
 
-Hectáreas; píxeles de 20 m; un píxel pertenece a la comuna que contiene su centro. Tabla completa, con no quemado y sin dato: [`datos/superficies.csv`](datos/superficies.csv).
+Hectáreas por clase de severidad de Key y Benson (2006); píxeles de 20 m; un píxel pertenece a la comuna que contiene su centro. Tabla completa, con no quemado y sin dato: [`datos/superficies.csv`](datos/superficies.csv).
 
-### Validación
+### Calibración local del umbral (enmienda del 11-11-2026)
 
-Dos referencias, dos caras del error. El protocolo y la regla que elige la cifra principal se escribieron **antes** de ver cualquier resultado.
+Los umbrales de Key y Benson (2006) no se calibraron en Chile central. Con la delimitación de EMSR715 (una sola categoría, "Burnt area") se calibró el corte quemado / no quemado; los límites entre clases de severidad siguen siendo los de Key y Benson, y la tabla por comuna los usa.
+
+- **Bloques espaciales de 2 km**, en pares de fracción quemada parecida: 103 para ajustar (34.435,4 ha) y 100 para validar (28.691,9 ha), con una franja de 200 m entre ambos. Los 1.200 píxeles de la muestra de M2 no entran a ninguno.
+- **Criterio:** el umbral con mayor exactitud en área sobre los bloques de ajuste; incertidumbre por bootstrap de bloques (1.000 réplicas). Umbral dNBR: 151 (intervalo 134 a 179), frente a 100 y 270 de Key y Benson.
+- **Índices:** dNBR, RdNBR (Miller y Thode 2007) y RBR (Parks et al. 2014). Regla fijada antes de calcular: gana el más exacto en validación salvo que supere al dNBR por menos de 1,0 punto. RBR lo superó por 0,5 puntos (0,3 a 0,8), así que queda dNBR.
+
+Resultados en los bloques de validación, con todos los píxeles (comisión, omisión y diferencia de área frente a EMSR715); hectáreas en todo el dominio de M2:
+
+| Umbral | Valor | Hectáreas | Exactitud | Comisión | Omisión | Área frente a EMSR715 |
+|---|---:|---:|---:|---:|---:|---:|
+| **dNBR calibrado** | **151** | **9.211,9 ha** | **96,4 %** | **18,5 %** | **10,7 %** | **9,5 %** |
+| RdNBR calibrado | 587 | 8.739,0 ha | 96,3 % | 17,0 % | 14,5 % | 3,1 % |
+| RBR calibrado | 156 | 8.960,7 ha | 96,9 % | 15,6 % | 10,2 % | 6,3 % |
+| Moderada baja o más (regla original) | dNBR 270 | 6.759,7 ha | 95,6 % | 12,2 % | 27,3 % | -17,2 % |
+| Todas las clases quemadas (regla original) | dNBR 100 | 10.663,0 ha | 95,5 % | 25,7 % | 6,2 % | 26,2 % |
+
+Intervalos bootstrap del 95 % del umbral elegido: exactitud 94,8 a 97,7 %, diferencia de área 0,0 a 20,8 %.
+
+**Por qué cambió la cifra principal.** La decisión se tomó el 11-11-2026, **después** de ver estos resultados, y por eso se declara. En bloques que no participaron del ajuste, la regla original subestima el área en 17,2 % y el umbral calibrado la sobreestima en 9,5 %; para una cifra de hectáreas, ese sesgo pesa más que la exactitud global, que sube poco (95,6 % a 96,4 %).
+
+**Límite en la interfaz urbana.** De 145 edificaciones dañadas de EMSN188 en bloques de validación (separadas al menos 100 m; solo cabían 145 de las 300 previstas), el umbral calibrado deja en quemado el 35,9 % (Wilson 95 %: 28,5 a 43,9), frente a 56,6 % con todas las clases: se calibró sobre vegetación. Detalle completo en [`datos/ajuste_umbrales.json`](datos/ajuste_umbrales.json).
+
+### Validación de la regla original (fijada antes de medir)
+
+Dos referencias, dos caras del error. El protocolo y la regla que elegía la cifra principal se escribieron **antes** de ver cualquier resultado. Copernicus EMSR715 delimitó 8.600,5 ha, dentro del rango de esa regla.
 
 | | Referencia | Qué mide | Resultado |
 |---|---|---|---|
@@ -39,7 +65,7 @@ M2: muestra de 300 puntos por estrato predicho, separados al menos 200 m, semill
 | Moderada baja o más | 6.759,7 ha | **96,8 %** | 11,7 % (8,5 a 15,8) | 19,8 % |
 | Todas las clases quemadas | 10.663,0 ha | 95,2 % | 25,7 % (21,1 a 30,9) | 7,0 % |
 
-**Regla de la cifra principal, fijada de antemano:** se publica el umbral con mayor exactitud ponderada y el otro como rango; si difieren en menos de 1,0 punto, se publica el de todas las clases. Ganó moderada baja o más, por 1,6 puntos. Todas las cifras las reproduce [`notebooks/02_validacion.ipynb`](notebooks/02_validacion.ipynb) y quedan en [`datos/metricas.json`](datos/metricas.json).
+**Regla original de la cifra principal, fijada de antemano:** se publica el umbral con mayor exactitud ponderada y el otro como rango; si difieren en menos de 1,0 punto, se publica el de todas las clases. Ganó moderada baja o más, por 1,6 puntos. Todas las cifras las reproduce [`notebooks/02_validacion.ipynb`](notebooks/02_validacion.ipynb) y quedan en [`datos/metricas.json`](datos/metricas.json).
 <!-- fin de resultados -->
 
 ## Qué hay en el mapa y en la ficha
@@ -60,8 +86,8 @@ M2: muestra de 300 puntos por estrato predicho, separados al menos 200 m, semill
 ## Limitaciones
 
 - **O1. Mide vegetación, no edificaciones.** Una parte importante de las edificaciones que Copernicus marcó como dañadas cae fuera de toda clase quemada (M1). El NBR responde a la pérdida de vegetación; un píxel urbano cambia poco aunque las casas se quemen. El daño a edificaciones exige imágenes de muy alta resolución.
-- **O2. La clase baja agrega sobre todo comisión.** Incluirla sube la comisión; dejarla fuera sube la omisión (tabla de M2). Ningún umbral único reproduce la referencia, por eso el resultado es un rango.
-- **O3. Los límites de las clases no están calibrados para Chile central.** Key y Benson los definieron para ecosistemas de Norteamérica, y aquí no hubo parcelas de severidad en terreno.
+- **O2. La clase baja agrega sobre todo comisión.** Incluirla sube la comisión; dejarla fuera sube la omisión (tabla de M2). Ningún umbral de Key y Benson reproduce la referencia; por eso el corte quemado / no quemado se calibró localmente (ver arriba) y la regla original queda como rango.
+- **O3. Los límites de las clases no están calibrados para Chile central.** Key y Benson los definieron para ecosistemas de Norteamérica, y aquí no hubo parcelas de severidad en terreno. Solo el corte quemado / no quemado se calibró, contra EMSR715; los límites entre baja, moderada y alta siguen sin calibrar.
 - **O4. No confiar a ciegas en el desplazamiento del catálogo.** Los COG de `sentinel-2-l2a` de Earth Search de estas escenas no traen el +1000 que declara su metadato STAC. Aplicarlo casi duplica el área quemada. Por eso el desplazamiento se mide en el agua, donde la reflectancia del infrarrojo de onda corta es cercana a cero.
 - **O5. El área construida es de 2021.** El contorno (ESA WorldCover 2021 v200, clase 50) se dibuja solo para leer el mapa; ninguna cifra lo usa. No incluye lo construido después y puede subrepresentar la autoconstrucción dispersa.
 - **Alcance de la validación.** M1 cubre solo el área de interés de EMSN188, en Viña del Mar. M2 cubre la parte del área de estudio dentro de la huella de la imagen WorldView-2: todo Viña del Mar y Villa Alemana, y parte de Valparaíso y Quilpué.

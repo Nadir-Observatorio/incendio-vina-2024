@@ -129,6 +129,11 @@ CLASSES_FILE: Final = "clases.tif"
 AREAS_FILE: Final = "superficies.csv"
 FINGERPRINTS_FILE: Final = "huellas.json"
 METRICS_FILE: Final = "metricas.json"
+# Local calibration of the burned / unburned threshold (severidad.ajuste, 2026-11-11). Since that
+# date its chosen threshold is the headline of the documents; metricas.json keeps the result of the
+# rule fixed before measuring, unchanged, as the record of the original protocol.
+ADJUSTMENT_FILE: Final = "ajuste_umbrales.json"
+VIEWER_ADJUSTMENT_KEY: Final = "calibrated"
 NO_DATA_NAME: Final = "No data"
 
 
@@ -431,25 +436,26 @@ def _same_number(shown: object, published: object) -> bool:
     return type(shown) is type(published) and shown == published
 
 
-def _subset(shown: object, published: object, where: str) -> list[str]:
+def _subset(shown: object, published: object, where: str,
+            source: str = METRICS_FILE) -> list[str]:
     """Every value in ``shown`` must exist in ``published`` at the same place, equal."""
     if isinstance(shown, dict):
         if not isinstance(published, dict):
-            return [f"{where}: is an object, {METRICS_FILE} has {type(published).__name__}"]
+            return [f"{where}: is an object, {source} has {type(published).__name__}"]
         problems: list[str] = []
         for key, value in shown.items():
             if key not in published:
-                problems.append(f"{where}.{key}: not in {METRICS_FILE}")
+                problems.append(f"{where}.{key}: not in {source}")
             else:
-                problems += _subset(value, published[key], f"{where}.{key}")
+                problems += _subset(value, published[key], f"{where}.{key}", source)
         return problems
     if isinstance(shown, list):
         if not isinstance(published, list) or len(shown) != len(published):
-            return [f"{where}: list differs from {METRICS_FILE}"]
+            return [f"{where}: list differs from {source}"]
         return [p for i, (a, b) in enumerate(zip(shown, published, strict=True))
-                for p in _subset(a, b, f"{where}[{i}]")]
+                for p in _subset(a, b, f"{where}[{i}]", source)]
     if not _same_number(shown, published):
-        return [f"{where}: {shown!r} but {METRICS_FILE} has {published!r}"]
+        return [f"{where}: {shown!r} but {source} has {published!r}"]
     return []
 
 
@@ -494,10 +500,58 @@ def compare_viewer(data: dict[str, Any], metrics_data: dict[str, Any],
     return problems
 
 
+def adjustment_figures(adjustment: Mapping[str, Any]) -> tuple[list[float], list[float]]:
+    """(hectares, percentages) of the calibrated headline that every document must show:
+    hectares and their interval; validation accuracy, commission, omission and area difference
+    of the chosen index, and its share of EMSN188 damage points in burned."""
+    chosen = adjustment["chosen"]
+    v = adjustment["indices"][chosen["index"]]["validation"]
+    hectares = [chosen["hectares"], *chosen["hectares_interval"]]
+    rates = [v["accuracy_pct"], v["commission_pct"], v["omission_pct"],
+             v["area_difference_pct"], adjustment["emsn188"][chosen["index"]]["pct"]]
+    return hectares, rates
+
+
+def compare_adjustment(root: Path, adjustment: Mapping[str, Any],
+                       viewer: Mapping[str, Any] | None) -> list[str]:
+    """Calibrated headline figures missing from the README files or not matching in the
+    viewer's ``DATA.calibrated`` block (an exact subset of ``ajuste_umbrales.json``)."""
+    hectares, rates = adjustment_figures(adjustment)
+    problems: list[str] = []
+    for name, spanish in (("README.md", True), ("README.en.md", False)):
+        text = (Path(root) / name).read_text(encoding="utf-8")
+        for value in hectares:
+            if _number(value, spanish) not in text:
+                problems.append(f"{name}: {_number(value, spanish)} ha ({ADJUSTMENT_FILE}) "
+                                "not found")
+        for value in rates:
+            shown = f"{value}".replace(".", ",") if spanish else f"{value}"
+            if not re.search(rf"(?<![\d.,]){re.escape(shown)} %", text):
+                problems.append(f"{name}: {shown} % ({ADJUSTMENT_FILE}) not found")
+    if viewer is not None:
+        problems += compare_viewer_adjustment(viewer, adjustment)
+    return problems
+
+
+def compare_viewer_adjustment(viewer: Mapping[str, Any],
+                              adjustment: Mapping[str, Any]) -> list[str]:
+    """``DATA.calibrated`` of the viewer must exist and be an exact subset of
+    ``ajuste_umbrales.json``, and must carry the calibrated headline."""
+    block = viewer.get(VIEWER_ADJUSTMENT_KEY)
+    where = f"{VIEWER_FILE}: DATA.{VIEWER_ADJUSTMENT_KEY}"
+    if not isinstance(block, dict) or not block:
+        return [f"{where} missing or empty"]
+    problems = _subset(block, adjustment, where, ADJUSTMENT_FILE)
+    chosen = block.get("chosen")
+    if not isinstance(chosen, dict) or "hectares" not in chosen:
+        problems.append(f"{where}.chosen.hectares missing: the headline cannot be checked")
+    return problems
+
+
 def compare_documents(root: Path) -> list[str]:
     """Figures in ``README.md`` (Spanish), ``README.en.md`` (English) and ``docs/index.html``
-    that do not match ``datos/metricas.json`` and ``datos/superficies.csv`` (empty if every
-    figure matches)."""
+    that do not match ``datos/metricas.json``, ``datos/superficies.csv`` and, when published,
+    ``datos/ajuste_umbrales.json`` (empty if every figure matches)."""
     root = Path(root)
     data = root / "datos"
     m: dict[str, Any] = json.loads((data / METRICS_FILE).read_text(encoding="utf-8"))
@@ -531,6 +585,10 @@ def compare_documents(root: Path) -> list[str]:
         problems.append(f"{VIEWER_FILE}: no `const DATA` block, its figures cannot be checked")
     else:
         problems += compare_viewer(viewer, m, table)
+    adjustment_path = data / ADJUSTMENT_FILE
+    if adjustment_path.exists():
+        adjustment = json.loads(adjustment_path.read_text(encoding="utf-8"))
+        problems += compare_adjustment(root, adjustment, viewer)
     return problems
 
 

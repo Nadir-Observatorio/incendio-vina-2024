@@ -11,7 +11,9 @@ How much land burned, and how severely, in the fire of 2 and 3 February 2024 in 
 <!-- results: written by herramientas/escribir_readme.py from datos/; do not edit by hand -->
 ## Results
 
-**6,759.7 ha burned at moderate-low severity or higher**, within a range up to 10,663.0 ha if low severity is included. Copernicus EMSR715 delineated 8,600.5 ha in the same area, inside that range.
+**9,211.9 ha burned** according to the dNBR threshold calibrated locally against Copernicus EMSR715 (151; 95 % bootstrap interval: 8,634.5 to 9,582.1 ha). EMSR715 delineated 8,600.5 ha in the same area.
+
+The rule fixed before measuring gave 6,759.7 ha at moderate-low severity or higher, within a range up to 10,663.0 ha if low severity is included. It is kept as the record in [`datos/metricas.json`](datos/metricas.json); the change of headline is explained below (amendment of 2026-11-11).
 
 | Municipality | Low | Moderate-low | Moderate-high | High | Moderate-low or higher | All burned classes |
 |---|---:|---:|---:|---:|---:|---:|
@@ -21,11 +23,35 @@ How much land burned, and how severely, in the fire of 2 and 3 February 2024 in 
 | Villa Alemana | 730.4 | 361.5 | 140.0 | 57.0 | 558.4 | 1,288.9 |
 | **Total** | **3,903.3** | **2,887.9** | **2,523.8** | **1,347.9** | **6,759.7** | **10,663.0** |
 
-Hectares; 20 m pixels; a pixel belongs to the municipality that contains its centre. Full table, including unburned and no data: [`datos/superficies.csv`](datos/superficies.csv).
+Hectares by Key and Benson (2006) severity class; 20 m pixels; a pixel belongs to the municipality that contains its centre. Full table, including unburned and no data: [`datos/superficies.csv`](datos/superficies.csv).
 
-### Validation
+### Local calibration of the threshold (amendment of 2026-11-11)
 
-Two references, two faces of the error. The protocol and the rule that picks the headline figure were written down **before** any result was seen.
+The Key and Benson (2006) thresholds were not calibrated for central Chile. The EMSR715 delineation (a single category, "Burnt area") calibrates the burned / unburned cut; the limits between severity classes are still those of Key and Benson, and the table by municipality uses them.
+
+- **2 km spatial blocks**, in pairs of similar burned fraction: 103 to fit (34,435.4 ha) and 100 to validate (28,691.9 ha), with a 200 m guard band between them. The 1,200 pixels of the M2 sample enter neither.
+- **Criterion:** the threshold with the highest accuracy in area over the fit blocks; uncertainty by block bootstrap (1,000 replicates). dNBR threshold: 151 (interval 134 to 179), against 100 and 270 in Key and Benson.
+- **Indices:** dNBR, RdNBR (Miller and Thode 2007) and RBR (Parks et al. 2014). Rule fixed before computing: the most accurate in validation wins unless it beats dNBR by less than 1.0 point. RBR beat it by 0.5 points (0.3 to 0.8), so dNBR stays.
+
+Results on the validation blocks, every pixel (commission, omission and area difference against EMSR715); hectares over the whole M2 domain:
+
+| Threshold | Value | Hectares | Accuracy | Commission | Omission | Area against EMSR715 |
+|---|---:|---:|---:|---:|---:|---:|
+| **dNBR calibrated** | **151** | **9,211.9 ha** | **96.4 %** | **18.5 %** | **10.7 %** | **9.5 %** |
+| RdNBR calibrated | 587 | 8,739.0 ha | 96.3 % | 17.0 % | 14.5 % | 3.1 % |
+| RBR calibrated | 156 | 8,960.7 ha | 96.9 % | 15.6 % | 10.2 % | 6.3 % |
+| Moderate-low or higher (original rule) | dNBR 270 | 6,759.7 ha | 95.6 % | 12.2 % | 27.3 % | -17.2 % |
+| All burned classes (original rule) | dNBR 100 | 10,663.0 ha | 95.5 % | 25.7 % | 6.2 % | 26.2 % |
+
+95 % bootstrap intervals of the chosen threshold: accuracy 94.8 to 97.7 %, area difference 0.0 to 20.8 %.
+
+**Why the headline changed.** The decision was taken on 2026-11-11, **after** seeing these results, which is why it is declared. On blocks that took no part in the fit, the original rule underestimates the area by 17.2 % and the calibrated threshold overestimates it by 9.5 %; for a figure in hectares that bias matters more than overall accuracy, which rises little (95.6 % to 96.4 %).
+
+**Limit in the urban interface.** Of 145 damaged buildings from EMSN188 in validation blocks (at least 100 m apart; only 145 of the planned 300 fitted), the calibrated threshold puts 35.9 % in burned (Wilson 95 %: 28.5 to 43.9), against 56.6 % with all burned classes: it was calibrated on vegetation. Full detail in [`datos/ajuste_umbrales.json`](datos/ajuste_umbrales.json).
+
+### Validation of the original rule (fixed before measuring)
+
+Two references, two faces of the error. The protocol and the rule that picked the headline figure were written down **before** any result was seen. Copernicus EMSR715 delineated 8,600.5 ha, inside the range of that rule.
 
 | | Reference | What it measures | Result |
 |---|---|---|---|
@@ -39,7 +65,7 @@ M2: sample of 300 points per predicted stratum, at least 200 m apart, seed 20240
 | Moderate-low or higher | 6,759.7 ha | **96.8 %** | 11.7 % (8.5 to 15.8) | 19.8 % |
 | All burned classes | 10,663.0 ha | 95.2 % | 25.7 % (21.1 to 30.9) | 7.0 % |
 
-**Headline rule, fixed beforehand:** publish the threshold with the higher area-weighted accuracy and the other as the range; if they differ by less than 1.0 point, publish all burned classes. Moderate-low or higher won by 1.6 points. Every number is reproduced by [`notebooks/02_validacion.ipynb`](notebooks/02_validacion.ipynb) and stored in [`datos/metricas.json`](datos/metricas.json).
+**Original headline rule, fixed beforehand:** publish the threshold with the higher area-weighted accuracy and the other as the range; if they differ by less than 1.0 point, publish all burned classes. Moderate-low or higher won by 1.6 points. Every number is reproduced by [`notebooks/02_validacion.ipynb`](notebooks/02_validacion.ipynb) and stored in [`datos/metricas.json`](datos/metricas.json).
 <!-- end of results -->
 
 ## What the map and the factsheet show
@@ -60,8 +86,8 @@ M2: sample of 300 points per predicted stratum, at least 200 m apart, seed 20240
 ## Limitations
 
 - **O1. It measures vegetation, not buildings.** A large share of the buildings that Copernicus mapped as damaged fall outside every burned class (M1). NBR responds to the loss of vegetation; an urban pixel changes little even when the houses burn. Building damage needs very high resolution imagery.
-- **O2. The low-severity class mostly adds commission.** Including it raises commission; leaving it out raises omission (M2 table). No single threshold reproduces the reference, so the result is a range.
-- **O3. The class limits are not calibrated for central Chile.** Key and Benson defined them for North American ecosystems, and no field severity plots were available here.
+- **O2. The low-severity class mostly adds commission.** Including it raises commission; leaving it out raises omission (M2 table). No Key and Benson threshold reproduces the reference; hence the burned / unburned cut was calibrated locally (see above) and the original rule stays as a range.
+- **O3. The class limits are not calibrated for central Chile.** Key and Benson defined them for North American ecosystems, and no field severity plots were available here. Only the burned / unburned cut was calibrated, against EMSR715; the limits between low, moderate and high are still uncalibrated.
 - **O4. Do not trust the catalogue offset blindly.** The Earth Search `sentinel-2-l2a` COGs of these scenes do not carry the +1000 offset that their STAC metadata declares. Applying it roughly doubles the burned area. The offset is therefore measured on water, where SWIR reflectance is close to zero.
 - **O5. The built-up area is from 2021.** The outline (ESA WorldCover 2021 v200, class 50) is drawn only to read the map; no figure uses it. It misses later settlements and can under-represent scattered self-built housing.
 - **Scope of the validation.** M1 covers only the EMSN188 area of interest in Viña del Mar. M2 covers the part of the study area inside the WorldView-2 footprint: all of Viña del Mar and Villa Alemana, and part of Valparaíso and Quilpué.

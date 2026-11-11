@@ -41,6 +41,7 @@
   .range { margin-top: 12px; }
   .range-bar { position: relative; height: 8px; border-radius: 4px; background: var(--wash); }
   .range-bar span { position: absolute; top: 0; bottom: 0; border-radius: 4px; }
+  .range-note { font-size: 11px; color: var(--ink-3); margin: 6px 0 0; }
   .range-legend { display: flex; justify-content: space-between; font-size: 11px; color: var(--ink-3);
     margin-top: 4px; font-variant-numeric: tabular-nums; }
 
@@ -131,6 +132,7 @@
     <div class="range" aria-hidden="true">
       <div class="range-bar" id="range-bar"></div>
       <div class="range-legend"><span>0</span><span id="range-max"></span></div>
+      <p class="range-note" id="range-note"></p>
     </div>
   </section>
 
@@ -174,7 +176,7 @@
     ["Enhanced regrowth, low", "rgb(145,207,96)"],
     ["Enhanced regrowth, high", "rgb(26,152,80)"]
   ];
-  const DATA = {"headline":{"threshold":"B","hectares":6759.7,"range_up_to_hectares":10663.0},"m1":{"points":7275,"in_municipalities":7275,"in_no_data":5,"universe":7270,"sample":300,"sample_grades":{"Destroyed":203,"Damaged":30,"Possible damage":67},"A":{"in_burned_class":164,"n":300,"pct":54.7,"wilson":[49.0,60.2],"destroyed_in_burned_class":123,"destroyed_n":203,"destroyed_pct":60.6,"destroyed_wilson":[53.7,67.1]},"B":{"in_burned_class":42,"n":300,"pct":14.0,"wilson":[10.5,18.4],"destroyed_in_burned_class":32,"destroyed_n":203,"destroyed_pct":15.8,"destroyed_wilson":[11.4,21.4]}},"m2":{"domain_pixels":1748150,"domain_ha":69926.0,"reference_burned_ha":8600.5,"A":{"predicted_burned_ha":10663.0,"overall":[520,600],"overall_pct":86.7,"overall_wilson":[83.7,89.2],"weighted_accuracy_pct":95.2,"commission":[77,300],"commission_pct":25.7,"commission_wilson":[21.1,30.9],"weighted_omission_pct":7.0,"matrix":[[223,77],[3,297]]},"B":{"predicted_burned_ha":6759.7,"overall":[558,600],"overall_pct":93.0,"overall_wilson":[90.7,94.8],"weighted_accuracy_pct":96.8,"commission":[35,300],"commission_pct":11.7,"commission_wilson":[8.5,15.8],"weighted_omission_pct":19.8,"matrix":[[265,35],[7,293]]}},"by_municipality":[{"name":"Valparaíso","ha":{"0":280.12,"1":3.0,"2":56.32,"3":21520.84,"4":1656.2,"5":1154.44,"6":797.96,"7":330.8}},{"name":"Viña del Mar","ha":{"0":74.64,"1":3.48,"2":36.72,"3":7665.48,"4":865.68,"5":815.92,"6":990.36,"7":589.12}},{"name":"Quilpué","ha":{"0":29.68,"1":0.76,"2":13.36,"3":22161.0,"4":650.96,"5":556.08,"6":595.56,"7":371.0}},{"name":"Villa Alemana","ha":{"0":3.0,"1":0.0,"2":5.16,"3":7796.92,"4":730.44,"5":361.48,"6":139.96,"7":57.0}}],"codes":[7,6,5,4,3,2,1],"names":{"1":"Enhanced regrowth, high","2":"Enhanced regrowth, low","3":"Unburned","4":"Low severity","5":"Moderate-low severity","6":"Moderate-high severity","7":"High severity"},"palette":{"0":[0,0,0,0],"1":[26,152,80,200],"2":[145,207,96,200],"3":[0,0,0,0],"4":[254,224,139,230],"5":[253,174,97,230],"6":[244,109,67,230],"7":[165,0,38,230]},"thresholds":{"A":4,"B":5},"seed":20240202,"sample_size":300,"scenes":{"before":"S2B_19HBD_20240118_0_L2A","after":"S2A_19HBD_20240212_0_L2A"},"corners":[[-71.656782,-32.972711],[-71.274467,-32.972711],[-71.274467,-33.20746],[-71.656782,-33.20746]],"layers":{"classes":"clases.png","built":"capas/construido.png","before":"capas/antes.jpg","after":"capas/despues.jpg"},"places":[{"name":"Quilpué","lonlat":[-71.44249,-33.04752]},{"name":"Valparaíso","lonlat":[-71.62963,-33.036]},{"name":"Villa Alemana","lonlat":[-71.3729,-33.04823]},{"name":"Viña del Mar","lonlat":[-71.55183,-33.02457]}]};
+  const DATA = {"headline":{"threshold":"B","hectares":6759.7,"range_up_to_hectares":10663.0},"m1":{"points":7275,"in_municipalities":7275,"in_no_data":5,"universe":7270,"sample":300,"sample_grades":{"Destroyed":203,"Damaged":30,"Possible damage":67},"A":{"in_burned_class":164,"n":300,"pct":54.7,"wilson":[49.0,60.2],"destroyed_in_burned_class":123,"destroyed_n":203,"destroyed_pct":60.6,"destroyed_wilson":[53.7,67.1]},"B":{"in_burned_class":42,"n":300,"pct":14.0,"wilson":[10.5,18.4],"destroyed_in_burned_class":32,"destroyed_n":203,"destroyed_pct":15.8,"destroyed_wilson":[11.4,21.4]}},"m2":{"domain_pixels":1748150,"domain_ha":69926.0,"reference_burned_ha":8600.5,"A":{"predicted_burned_ha":10663.0,"overall":[520,600],"overall_pct":86.7,"overall_wilson":[83.7,89.2],"weighted_accuracy_pct":95.2,"commission":[77,300],"commission_pct":25.7,"commission_wilson":[21.1,30.9],"weighted_omission_pct":7.0,"matrix":[[223,77],[3,297]]},"B":{"predicted_burned_ha":6759.7,"overall":[558,600],"overall_pct":93.0,"overall_wilson":[90.7,94.8],"weighted_accuracy_pct":96.8,"commission":[35,300],"commission_pct":11.7,"commission_wilson":[8.5,15.8],"weighted_omission_pct":19.8,"matrix":[[265,35],[7,293]]}},"by_municipality":[{"name":"Valparaíso","ha":{"0":280.12,"1":3.0,"2":56.32,"3":21520.84,"4":1656.2,"5":1154.44,"6":797.96,"7":330.8}},{"name":"Viña del Mar","ha":{"0":74.64,"1":3.48,"2":36.72,"3":7665.48,"4":865.68,"5":815.92,"6":990.36,"7":589.12}},{"name":"Quilpué","ha":{"0":29.68,"1":0.76,"2":13.36,"3":22161.0,"4":650.96,"5":556.08,"6":595.56,"7":371.0}},{"name":"Villa Alemana","ha":{"0":3.0,"1":0.0,"2":5.16,"3":7796.92,"4":730.44,"5":361.48,"6":139.96,"7":57.0}}],"codes":[7,6,5,4,3,2,1],"names":{"1":"Enhanced regrowth, high","2":"Enhanced regrowth, low","3":"Unburned","4":"Low severity","5":"Moderate-low severity","6":"Moderate-high severity","7":"High severity"},"palette":{"0":[0,0,0,0],"1":[26,152,80,200],"2":[145,207,96,200],"3":[0,0,0,0],"4":[254,224,139,230],"5":[253,174,97,230],"6":[244,109,67,230],"7":[165,0,38,230]},"thresholds":{"A":4,"B":5},"seed":20240202,"sample_size":300,"scenes":{"before":"S2B_19HBD_20240118_0_L2A","after":"S2A_19HBD_20240212_0_L2A"},"corners":[[-71.656782,-32.972711],[-71.274467,-32.972711],[-71.274467,-33.20746],[-71.656782,-33.20746]],"layers":{"classes":"clases.png","built":"capas/construido.png","before":"capas/antes.jpg","after":"capas/despues.jpg"},"places":[{"name":"Quilpué","lonlat":[-71.44249,-33.04752]},{"name":"Valparaíso","lonlat":[-71.62963,-33.036]},{"name":"Villa Alemana","lonlat":[-71.3729,-33.04823]},{"name":"Viña del Mar","lonlat":[-71.55183,-33.02457]}],"calibrated":{"date":"2026-11-11","chosen":{"index":"dNBR","threshold":151,"threshold_interval":[134,179],"hectares":9211.9,"hectares_interval":[8634.5,9582.1]},"indices":{"dNBR":{"validation":{"accuracy_pct":96.4,"commission_pct":18.5,"omission_pct":10.7,"area_difference_pct":9.5,"accuracy_interval":[94.8,97.7],"commission_interval":[14.1,25.0],"omission_interval":[5.4,17.3],"area_difference_interval":[0.0,20.8]}}},"published_thresholds_on_validation":{"A":{"accuracy_pct":95.5,"commission_pct":25.7,"omission_pct":6.2,"area_difference_pct":26.2},"B":{"accuracy_pct":95.6,"commission_pct":12.2,"omission_pct":27.3,"area_difference_pct":-17.2}},"emsn188":{"sample":145,"dNBR":{"pct":35.9,"wilson":[28.5,43.9]},"A":{"pct":56.6,"wilson":[48.4,64.3]}}}};
 
   const ES_NAMES = {
     "High severity": "Severidad alta",
@@ -192,7 +194,8 @@
       title: "Severidad del incendio de Viña del Mar",
       sub: "2 y 3 de febrero de 2024 · Valparaíso, Viña del Mar, Quilpué y Villa Alemana, Chile",
       hl_unit: "ha",
-      hl_text: (b, a, ref) => `quemadas con severidad moderada baja o mayor, en un rango de hasta <b>${a} ha</b> si se incluye la severidad baja. Copernicus EMSR715 delimitó ${ref} ha en la misma zona.`,
+      hl_text: (lo, hi, thr, ref, b, a) => `quemadas según el umbral dNBR calibrado localmente con Copernicus EMSR715 (${thr}; intervalo del 95 %: ${lo} a ${hi} ha). EMSR715 delimitó ${ref} ha en la misma zona. La regla fijada antes de medir daba <b>${b} ha</b>, con un rango de hasta ${a} ha.`,
+      range_note: "Barra: regla original (moderada baja o mayor y todas las clases). Franja oscura: intervalo del umbral calibrado. Línea: EMSR715.",
       h_legend: "Clases de severidad", opacity: "Opacidad",
       h_context: "Capas de contexto",
       cities: "Ciudades (GeoNames, 50.000 hab. o más)",
@@ -205,6 +208,13 @@
       h_munis: "Superficie quemada por comuna",
       muni_total: (v) => `${v} ha quemadas`,
       h_validation: "Validación",
+      v_cal: (d) => `Umbral calibrado, en bloques de validación (enmienda del ${d})`,
+      v_cacc: "Exactitud frente a EMSR715",
+      v_ccom: "Comisión",
+      v_com_o: "Omisión",
+      v_carea: "Diferencia de área frente a EMSR715",
+      v_cbld: (n) => `Edificios dañados (EMSN188, ${n} en validación) dentro de quemado`,
+      v_orig: "Regla original, fijada antes de medir",
       v_acc: "Precisión ponderada por área frente a EMSR715",
       v_com: "Comisión (moderada baja o mayor)",
       v_om: "Omisión ponderada por área",
@@ -212,11 +222,13 @@
       v_bld: "Edificios dañados (EMSN188) dentro de alguna clase quemada",
       v_dest: "Edificios destruidos dentro de alguna clase quemada",
       ci: (lo, hi) => `Intervalo de Wilson al 95 %: ${lo} a ${hi} %`,
+      boot: (lo, hi) => `Intervalo bootstrap por bloques al 95 %: ${lo} a ${hi} %`,
+      vs_orig: (b, a) => `Regla original en los mismos bloques: ${b} % con moderada baja o mayor, ${a} % con todas las clases`,
       no_ci: "Estimador ponderado por área (Olofsson et al. 2014), sin intervalo de Wilson",
-      protocol: (n, seed) => `El umbral principal se eligió con una regla escrita antes de validar: el de mayor precisión ponderada frente a EMSR715. Muestras de ${n} puntos por estrato y ${n} puntos de daño, semilla ${seed}.`,
+      protocol: (n, seed, d) => `La regla original eligió el umbral con una regla escrita antes de validar: el de mayor precisión ponderada frente a EMSR715. Muestras de ${n} puntos por estrato y ${n} puntos de daño, semilla ${seed}. El ${d} el corte quemado / no quemado se calibró contra EMSR715 en bloques de 2 km, separados en ajuste y validación; ese protocolo se fijó antes de calcular, pero la decisión de usarlo como cifra principal se tomó después de ver los resultados (detalle en el README).`,
       h_care: "Leer con cuidado",
       care1: "<b>Vegetación, no edificios.</b> El dNBR a 20 m mide pérdida de vegetación; cerca de la mitad de los edificios dañados que mapeó Copernicus EMSN188 quedan fuera de toda clase quemada.",
-      care2: "Los límites de clase de Key y Benson (2006) no están calibrados para Chile central; por eso el resultado se da como rango. Las superficies se refieren a las cuatro comunas; el mapa muestra toda la ventana procesada.",
+      care2: "Solo el corte quemado / no quemado se calibró, contra EMSR715; los límites entre clases de severidad de Key y Benson (2006) siguen sin calibrar para Chile central. El umbral calibrado omite más edificios dañados que la regla original con todas las clases. Las superficies se refieren a las cuatro comunas; el mapa muestra toda la ventana procesada.",
       method: (pre, post) => `Método: escenas Sentinel-2 L2A ${pre} y ${post}; desfase de reflectancia medido sobre agua; dNBR con desfase de anillo sin quemar (Parks et al. 2018). El repositorio reconstruye el mapa y lo compara con una huella de contenido publicada.`,
       footer: "Camilo López Barra, geógrafo.<br>Contiene datos modificados de Copernicus Sentinel 2024. Validación: Copernicus Emergency Management Service (© 2024 Unión Europea), EMSR715 y EMSN188. Ciudades: GeoNames (CC BY 4.0). Área construida: © ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium (CC BY 4.0). Mapa base © <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">colaboradores de OpenStreetMap</a>. Código MIT, datos derivados CC BY 4.0. Análisis independiente, sin respaldo de los proveedores de datos.",
       pop_none: "Sin quemar o sin dato",
@@ -227,7 +239,8 @@
       title: "Burn severity of the Viña del Mar fire",
       sub: "2 to 3 February 2024 · Valparaíso, Viña del Mar, Quilpué and Villa Alemana, Chile",
       hl_unit: "ha",
-      hl_text: (b, a, ref) => `burned at moderate-low severity or higher, within a range up to <b>${a} ha</b> if low severity is included. Copernicus EMSR715 delineated ${ref} ha in the same area.`,
+      hl_text: (lo, hi, thr, ref, b, a) => `burned according to the dNBR threshold calibrated locally against Copernicus EMSR715 (${thr}; 95 % interval: ${lo} to ${hi} ha). EMSR715 delineated ${ref} ha in the same area. The rule fixed before measuring gave <b>${b} ha</b>, within a range up to ${a} ha.`,
+      range_note: "Bar: original rule (moderate-low or higher and all burned classes). Dark band: interval of the calibrated threshold. Line: EMSR715.",
       h_legend: "Severity classes", opacity: "Opacity",
       h_context: "Context layers",
       cities: "Cities (GeoNames, 50,000 inhabitants or more)",
@@ -240,6 +253,13 @@
       h_munis: "Burned area by municipality",
       muni_total: (v) => `${v} ha burned`,
       h_validation: "Validation",
+      v_cal: (d) => `Calibrated threshold, on validation blocks (amendment of ${d})`,
+      v_cacc: "Accuracy against EMSR715",
+      v_ccom: "Commission",
+      v_com_o: "Omission",
+      v_carea: "Area difference against EMSR715",
+      v_cbld: (n) => `Damaged buildings (EMSN188, ${n} in validation) inside burned`,
+      v_orig: "Original rule, fixed before measuring",
       v_acc: "Area-weighted accuracy against EMSR715",
       v_com: "Commission (moderate-low or higher)",
       v_om: "Area-weighted omission",
@@ -247,11 +267,13 @@
       v_bld: "Damaged buildings (EMSN188) inside any burned class",
       v_dest: "Destroyed buildings inside any burned class",
       ci: (lo, hi) => `Wilson 95 % interval: ${lo} to ${hi} %`,
+      boot: (lo, hi) => `95 % block bootstrap interval: ${lo} to ${hi} %`,
+      vs_orig: (b, a) => `Original rule on the same blocks: ${b} % at moderate-low or higher, ${a} % with all burned classes`,
       no_ci: "Area-weighted estimator (Olofsson et al. 2014), no Wilson interval",
-      protocol: (n, seed) => `The headline threshold was chosen by a rule written before validation: the one with the higher area-weighted accuracy against EMSR715. Samples of ${n} points per stratum and ${n} damage points, seed ${seed}.`,
+      protocol: (n, seed, d) => `The original rule chose the threshold by a rule written before validation: the one with the higher area-weighted accuracy against EMSR715. Samples of ${n} points per stratum and ${n} damage points, seed ${seed}. On ${d} the burned / unburned cut was calibrated against EMSR715 on 2 km blocks split into fit and validation; that protocol was fixed before computing, but the decision to make it the headline was taken after seeing the results (details in the README).`,
       h_care: "Read with care",
       care1: "<b>Vegetation, not buildings.</b> dNBR at 20 m measures loss of vegetation; close to half of the damaged buildings mapped by Copernicus EMSN188 fall outside every burned class.",
-      care2: "The Key and Benson (2006) class limits are not calibrated for central Chile, which is why the result is given as a range. Areas refer to the four municipalities; the map shows the whole processed window.",
+      care2: "Only the burned / unburned cut was calibrated, against EMSR715; the Key and Benson (2006) limits between severity classes are still uncalibrated for central Chile. The calibrated threshold misses more damaged buildings than the original rule with all burned classes. Areas refer to the four municipalities; the map shows the whole processed window.",
       method: (pre, post) => `Method: Sentinel-2 L2A scenes ${pre} and ${post}; reflectance offset measured on water; dNBR with an unburned-ring offset (Parks et al. 2018). The repository rebuilds the map and checks it against a published content hash.`,
       footer: "Camilo López Barra, geographer.<br>Contains modified Copernicus Sentinel data 2024. Validation: Copernicus Emergency Management Service (© 2024 European Union), EMSR715 and EMSN188. Cities: GeoNames (CC BY 4.0). Built-up area: © ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium (CC BY 4.0). Base map © <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap contributors</a>. Code MIT, derived data CC BY 4.0. Independent analysis, not endorsed by any of the data providers.",
       pop_none: "Unburned or no data",
@@ -281,16 +303,21 @@
     document.querySelectorAll(".lang button").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === lang));
     document.getElementById("map").setAttribute("aria-label", t.map_label);
 
-    const h = DATA.headline;
-    document.getElementById("hl").innerHTML = `${fmt(h.hectares)}<small>${t.hl_unit}</small>`;
+    const h = DATA.headline, K = DATA.calibrated, c = K.chosen;
+    const day = K.date.split("-").reverse().join("-");
+    document.getElementById("hl").innerHTML = `${fmt(c.hectares)}<small>${t.hl_unit}</small>`;
     document.getElementById("hl-text").innerHTML =
-      t.hl_text(fmt(h.hectares), fmt(h.range_up_to_hectares), fmt(DATA.m2.reference_burned_ha));
+      t.hl_text(fmt(c.hectares_interval[0]), fmt(c.hectares_interval[1]), c.threshold,
+                fmt(DATA.m2.reference_burned_ha), fmt(h.hectares), fmt(h.range_up_to_hectares));
     const max = h.range_up_to_hectares * 1.08;
+    const pc = (v) => v / max * 100;
     document.getElementById("range-bar").innerHTML =
-      `<span style="left:0;width:${h.range_up_to_hectares / max * 100}%;background:${rgb(4)}"></span>` +
-      `<span style="left:0;width:${h.hectares / max * 100}%;background:${rgb(6)}"></span>` +
-      `<span title="EMSR715" style="left:${DATA.m2.reference_burned_ha / max * 100}%;width:2px;background:#1b2228;border-radius:0;top:-3px;bottom:-3px"></span>`;
+      `<span style="left:0;width:${pc(h.range_up_to_hectares)}%;background:${rgb(4)}"></span>` +
+      `<span style="left:0;width:${pc(h.hectares)}%;background:${rgb(6)}"></span>` +
+      `<span title="${fmt(c.hectares_interval[0])} - ${fmt(c.hectares_interval[1])} ha" style="left:${pc(c.hectares_interval[0])}%;width:${pc(c.hectares_interval[1] - c.hectares_interval[0])}%;background:rgba(27,34,40,.55);border-radius:2px;top:-2px;bottom:-2px"></span>` +
+      `<span title="EMSR715" style="left:${pc(DATA.m2.reference_burned_ha)}%;width:2px;background:#1b2228;border-radius:0;top:-4px;bottom:-4px"></span>`;
     document.getElementById("range-max").textContent = `${fmt(h.range_up_to_hectares)} ha`;
+    document.getElementById("range-note").textContent = t.range_note;
 
     // Legend from CLASSES (names and colours of severidad.estudio).
     const legend = document.getElementById("legend");
@@ -342,14 +369,25 @@
       return `<div class="metric"><span>${label}</span><span class="v">${fmt(v)} %</span>
         <span class="ci">${ci ? t.ci(fmt(ci[0]), fmt(ci[1])) : t.no_ci}${bar}</span></div>`;
     };
+    const KV = K.indices[c.index].validation, KO = K.published_thresholds_on_validation;
+    const KE = K.emsn188[c.index];
+    const bmetric = (label, v, ci, extra) => `<div class="metric"><span>${label}</span><span class="v">${fmt(v)} %</span>
+        <span class="ci">${ci ? t.boot(fmt(ci[0]), fmt(ci[1])) : ""}${extra ? "<br>" + extra : ""}</span></div>`;
     document.getElementById("validation").innerHTML =
+      `<p class="note"><b>${t.v_cal(day)}</b></p>` +
+      bmetric(t.v_cacc, KV.accuracy_pct, KV.accuracy_interval, t.vs_orig(fmt(KO.B.accuracy_pct), fmt(KO.A.accuracy_pct))) +
+      bmetric(t.v_ccom, KV.commission_pct, KV.commission_interval, t.vs_orig(fmt(KO.B.commission_pct), fmt(KO.A.commission_pct))) +
+      bmetric(t.v_com_o, KV.omission_pct, KV.omission_interval, t.vs_orig(fmt(KO.B.omission_pct), fmt(KO.A.omission_pct))) +
+      bmetric(t.v_carea, KV.area_difference_pct, KV.area_difference_interval, t.vs_orig(fmt(KO.B.area_difference_pct), fmt(KO.A.area_difference_pct))) +
+      metric(t.v_cbld(K.emsn188.sample), KE.pct, KE.wilson) +
+      `<p class="note"><b>${t.v_orig}</b></p>` +
       metric(t.v_acc, B.weighted_accuracy_pct, null) +
       metric(t.v_com, B.commission_pct, B.commission_wilson) +
       metric(t.v_om, B.weighted_omission_pct, null) +
       metric(t.v_comA, A.commission_pct, A.commission_wilson) +
       metric(t.v_bld, M1.pct, M1.wilson) +
       metric(t.v_dest, M1.destroyed_pct, M1.destroyed_wilson);
-    document.getElementById("protocol").textContent = t.protocol(DATA.sample_size, DATA.seed);
+    document.getElementById("protocol").textContent = t.protocol(DATA.sample_size, DATA.seed, day);
     document.getElementById("method").textContent = t.method(DATA.scenes.before, DATA.scenes.after);
     if (popup) popup.remove();
   }

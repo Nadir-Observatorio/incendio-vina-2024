@@ -2,6 +2,7 @@
 
     python visor/make_viewer.py            # refuses to overwrite
     python visor/make_viewer.py --force    # replaces the page and its layers
+    python visor/make_viewer.py --force --solo-pagina    # replaces only docs/index.html
 
 Writes, next to `docs/clases.png` (written by `severidad.web`):
 
@@ -159,7 +160,10 @@ def viewer_data(corners: list[list[float]]) -> dict[str, Any]:
         "places": [{"name": f["properties"]["NAME"], "lonlat": f["geometry"]["coordinates"]}
                    for f in places["features"]],
     }
+    adjustment = json.loads((DATA_DIR / estudio.ADJUSTMENT_FILE).read_text(encoding="utf-8"))
+    data[estudio.VIEWER_ADJUSTMENT_KEY] = calibrated_block(adjustment)
     problems = estudio.compare_viewer(data, metrics, table)
+    problems += estudio.compare_viewer_adjustment(data, adjustment)
     if problems:
         raise ValueError("DATA does not match datos/: " + "; ".join(problems))
     # The legend sums the municipalities in the browser: it must give the published headline.
@@ -169,6 +173,29 @@ def viewer_data(corners: list[list[float]]) -> dict[str, Any]:
         raise ValueError(f"superficies.csv sums {burned_b:.2f} ha, headline says "
                          f"{metrics['headline']['hectares']}")
     return data
+
+
+def calibrated_block(adj: dict[str, Any]) -> dict[str, Any]:
+    """What the page shows of the local calibration (an exact subset of ajuste_umbrales.json):
+    the calibrated headline, its validation, the original thresholds on the same validation
+    blocks and the EMSN188 check."""
+    index = adj["chosen"]["index"]
+    v = adj["indices"][index]["validation"]
+    keep = ("accuracy_pct", "commission_pct", "omission_pct", "area_difference_pct")
+    return {
+        "date": adj["date"],
+        "chosen": {k: adj["chosen"][k] for k in ("index", "threshold", "threshold_interval",
+                                                  "hectares", "hectares_interval")},
+        "indices": {index: {"validation": {k: v[k] for k in (
+            *keep, "accuracy_interval", "commission_interval", "omission_interval",
+            "area_difference_interval")}}},
+        "published_thresholds_on_validation": {
+            key: {k: adj["published_thresholds_on_validation"][key][k] for k in keep}
+            for key in estudio.THRESHOLDS},
+        "emsn188": {"sample": adj["emsn188"]["sample"],
+                    **{key: {k: adj["emsn188"][key][k] for k in ("pct", "wilson")}
+                       for key in (index, "A")}},
+    }
 
 
 def render(data: dict[str, Any], template: Path = TEMPLATE) -> str:
@@ -183,12 +210,15 @@ def render(data: dict[str, Any], template: Path = TEMPLATE) -> str:
     return html
 
 
-def build(force: bool = False, docs: Path = DOCS) -> list[Path]:
-    """Write the page and its three layers to ``docs``; returns the written paths."""
+def build(force: bool = False, docs: Path = DOCS, page_only: bool = False) -> list[Path]:
+    """Write the page and its three layers to ``docs`` (only the page with ``page_only``, which
+    needs neither the scenes nor the built-up raster); returns the written paths."""
     import matplotlib.image
 
     docs = Path(docs)
-    outputs = [docs / "index.html", *(docs / p for p in LAYERS.values())]
+    outputs = [docs / "index.html"]
+    if not page_only:
+        outputs += [docs / p for p in LAYERS.values()]
     existing = [p.relative_to(docs).as_posix() for p in outputs if p.exists()]
     if existing and not force:
         raise FileExistsError(f"{existing} exist; use --force to replace them")
@@ -198,6 +228,11 @@ def build(force: bool = False, docs: Path = DOCS) -> list[Path]:
     grid, corners = mercator_grid()
     data = viewer_data(corners)
     html = render(data)
+    if page_only:
+        (docs / "index.html").write_bytes(html.encode("utf-8"))
+        logger.info("written index.html (%d bytes, sha256 %s)",
+                    (docs / "index.html").stat().st_size, sha256(docs / "index.html")[:12])
+        return outputs
     layers = {"built": built_outline(grid), "before": true_colour(estudio.PRE_SCENE, grid),
               "after": true_colour(estudio.POST_SCENE, grid)}
     (docs / "capas").mkdir(parents=True, exist_ok=True)
@@ -219,9 +254,11 @@ def main(argv: list[str] | None = None) -> int:
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--force", action="store_true", help="replace the page and its layers")
+    parser.add_argument("--solo-pagina", action="store_true",
+                        help="write only docs/index.html; the layers are left as they are")
     args = parser.parse_args(argv)
     try:
-        build(force=args.force)
+        build(force=args.force, page_only=args.solo_pagina)
     except (FileExistsError, FileNotFoundError, ValueError) as error:
         logger.error("%s", error)
         return 1

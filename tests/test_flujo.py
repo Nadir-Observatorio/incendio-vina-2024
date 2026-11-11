@@ -217,7 +217,12 @@ def _viewer() -> dict:
         "by_municipality": [{"name": name, "ha": {str(c): v for c, v in table[name].items()}}
                             for name in estudio.MUNICIPALITIES.values()],
         "texts": {"es": "Superficie quemada", "en": "Burned area"},
+        "calibrated": {"chosen": {"hectares": _adjustment()["chosen"]["hectares"]}},
     }
+
+
+def _adjustment() -> dict:
+    return json.loads((ROOT / "datos" / estudio.ADJUSTMENT_FILE).read_text(encoding="utf-8"))
 
 
 def _page(block: str) -> str:

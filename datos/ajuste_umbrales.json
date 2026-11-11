@@ -1,0 +1,361 @@
+{
+  "note": "Additional result, not the headline: local fit of the burned / unburned threshold against EMSR715 with spatial blocks. The headline in metricas.json (rule fixed before any result was seen) is unchanged. Only the burned / unburned cut is fitted; the severity class limits are Key and Benson (2006). Validated on blocks of this fire only: not tested on other fires.",
+  "date": "2026-11-11",
+  "protocol": {
+    "reference": "EMSR715 AOI01 delineation v2 in the measurement 2 domain (municipalities, WorldView-2 footprint, valid pixel), pixel-centre rule, every pixel (census)",
+    "excluded": "the 1,200 pixels sampled by measurement 2 (rebuilt with the study seed)",
+    "blocks": "2 km blocks aligned to clases.tif, sorted by reference burned fraction and split in pairs at random (study seed): one to the fit, one to the validation; validation pixels closer than 10 px (200 m, Chebyshev) to a fit block are left out",
+    "indices": "x 1000; dNBR as published (ring offset removed); RdNBR = dNBR / sqrt(max(|NBRpre|, 0.001)) (Miller and Thode 2007); RBR = dNBR / (NBRpre + 1.001) (Parks et al. 2014); offset removed before relativising (Parks et al. 2018); burned when index >= threshold",
+    "criterion": "highest accuracy in area over the fit pixels, ties to the lowest threshold; Youden's index and area balance reported as sensitivity",
+    "uncertainty": "block bootstrap, 1000 replicates: fit blocks for threshold and hectares, validation blocks for validation figures; 95 % percentile intervals",
+    "choice_rule": "index with the highest validation accuracy; if it beats dNBR by less than 1 point, dNBR",
+    "emsn188": "independent check: up to 300 damage points in validation blocks, outside the measurement 1 sample, minimum distance 100 m (amended 2026-11-11 before any figure was seen: every point that fits, as only 145 do); share in burned with Wilson 95 %",
+    "seed": 20240202,
+    "block_px": 100,
+    "replicates": 1000
+  },
+  "domain": {
+    "domain_ha": 69926.0,
+    "reference_burned_ha": 8600.5,
+    "m2_pixels_excluded": 1200,
+    "fit_blocks": 103,
+    "validation_blocks": 100,
+    "fit_ha": 34435.4,
+    "fit_reference_burned_ha": 4428.7,
+    "validation_ha": 28691.9,
+    "validation_reference_burned_ha": 3360.4
+  },
+  "indices": {
+    "dNBR": {
+      "threshold": 151,
+      "threshold_interval": [
+        134,
+        179
+      ],
+      "hectares": 9211.9,
+      "hectares_interval": [
+        8634.5,
+        9582.1
+      ],
+      "sensitivity_thresholds": {
+        "youden": 100,
+        "balance": 169
+      },
+      "validation": {
+        "pixels": [
+          74986,
+          17026,
+          9024,
+          616261
+        ],
+        "predicted_burned_ha": 3680.5,
+        "accuracy_pct": 96.4,
+        "accuracy_interval": [
+          94.8,
+          97.7
+        ],
+        "commission_pct": 18.5,
+        "commission_interval": [
+          14.1,
+          25.0
+        ],
+        "omission_pct": 10.7,
+        "omission_interval": [
+          5.4,
+          17.3
+        ],
+        "area_difference_pct": 9.5,
+        "area_difference_interval": [
+          0.0,
+          20.8
+        ]
+      }
+    },
+    "RdNBR": {
+      "threshold": 587,
+      "threshold_interval": [
+        511,
+        704
+      ],
+      "hectares": 8739.0,
+      "hectares_interval": [
+        7899.1,
+        9323.6
+      ],
+      "sensitivity_thresholds": {
+        "youden": 305,
+        "balance": 588
+      },
+      "validation": {
+        "pixels": [
+          71851,
+          14730,
+          12159,
+          618557
+        ],
+        "predicted_burned_ha": 3463.2,
+        "accuracy_pct": 96.3,
+        "accuracy_interval": [
+          94.6,
+          97.6
+        ],
+        "commission_pct": 17.0,
+        "commission_interval": [
+          13.1,
+          23.1
+        ],
+        "omission_pct": 14.5,
+        "omission_interval": [
+          7.6,
+          23.6
+        ],
+        "area_difference_pct": 3.1,
+        "area_difference_interval": [
+          -8.7,
+          15.4
+        ]
+      }
+    },
+    "RBR": {
+      "threshold": 156,
+      "threshold_interval": [
+        132,
+        176
+      ],
+      "hectares": 8960.7,
+      "hectares_interval": [
+        8557.1,
+        9444.8
+      ],
+      "sensitivity_thresholds": {
+        "youden": 90,
+        "balance": 164
+      },
+      "validation": {
+        "pixels": [
+          75422,
+          13897,
+          8588,
+          619390
+        ],
+        "predicted_burned_ha": 3572.8,
+        "accuracy_pct": 96.9,
+        "accuracy_interval": [
+          95.6,
+          98.0
+        ],
+        "commission_pct": 15.6,
+        "commission_interval": [
+          11.8,
+          21.1
+        ],
+        "omission_pct": 10.2,
+        "omission_interval": [
+          5.3,
+          16.1
+        ],
+        "area_difference_pct": 6.3,
+        "area_difference_interval": [
+          -1.9,
+          15.8
+        ]
+      }
+    }
+  },
+  "published_thresholds_on_validation": {
+    "A": {
+      "pixels": [
+        78770,
+        27236,
+        5240,
+        606051
+      ],
+      "predicted_burned_ha": 4240.2,
+      "accuracy_pct": 95.5,
+      "accuracy_interval": [
+        94.0,
+        96.8
+      ],
+      "commission_pct": 25.7,
+      "commission_interval": [
+        20.4,
+        33.8
+      ],
+      "omission_pct": 6.2,
+      "omission_interval": [
+        2.8,
+        10.3
+      ],
+      "area_difference_pct": 26.2,
+      "area_difference_interval": [
+        16.4,
+        43.0
+      ]
+    },
+    "B": {
+      "pixels": [
+        61049,
+        8488,
+        22961,
+        624799
+      ],
+      "predicted_burned_ha": 2781.5,
+      "accuracy_pct": 95.6,
+      "accuracy_interval": [
+        93.4,
+        97.5
+      ],
+      "commission_pct": 12.2,
+      "commission_interval": [
+        8.7,
+        17.8
+      ],
+      "omission_pct": 27.3,
+      "omission_interval": [
+        17.8,
+        38.9
+      ],
+      "area_difference_pct": -17.2,
+      "area_difference_interval": [
+        -30.0,
+        -6.1
+      ]
+    }
+  },
+  "accuracy_differences_points": {
+    "dNBR_minus_A": [
+      0.9,
+      0.5,
+      1.3
+    ],
+    "dNBR_minus_B": [
+      0.8,
+      0.0,
+      1.7
+    ],
+    "RdNBR_minus_A": [
+      0.8,
+      -0.0,
+      1.6
+    ],
+    "RdNBR_minus_B": [
+      0.6,
+      0.0,
+      1.4
+    ],
+    "RdNBR_minus_dNBR": [
+      -0.1,
+      -0.6,
+      0.4
+    ],
+    "RBR_minus_A": [
+      1.4,
+      1.0,
+      1.8
+    ],
+    "RBR_minus_B": [
+      1.2,
+      0.4,
+      2.3
+    ],
+    "RBR_minus_dNBR": [
+      0.5,
+      0.3,
+      0.8
+    ]
+  },
+  "chosen": {
+    "index": "dNBR",
+    "threshold": 151,
+    "threshold_interval": [
+      134,
+      179
+    ],
+    "hectares": 9211.9,
+    "hectares_interval": [
+      8634.5,
+      9582.1
+    ],
+    "headline_unchanged": {
+      "threshold": "B",
+      "hectares": 6759.7,
+      "range_up_to_hectares": 10663.0
+    }
+  },
+  "emsn188": {
+    "candidates": 1788,
+    "sample_target": 300,
+    "sample": 145,
+    "destroyed": 91,
+    "A": {
+      "in_burned": 82,
+      "pct": 56.6,
+      "wilson": [
+        48.4,
+        64.3
+      ],
+      "destroyed_in_burned": 58,
+      "destroyed_pct": 63.7,
+      "destroyed_wilson": [
+        53.5,
+        72.9
+      ]
+    },
+    "B": {
+      "in_burned": 21,
+      "pct": 14.5,
+      "wilson": [
+        9.7,
+        21.1
+      ],
+      "destroyed_in_burned": 17,
+      "destroyed_pct": 18.7,
+      "destroyed_wilson": [
+        12.0,
+        27.9
+      ]
+    },
+    "dNBR": {
+      "in_burned": 52,
+      "pct": 35.9,
+      "wilson": [
+        28.5,
+        43.9
+      ],
+      "destroyed_in_burned": 36,
+      "destroyed_pct": 39.6,
+      "destroyed_wilson": [
+        30.1,
+        49.8
+      ]
+    },
+    "RdNBR": {
+      "in_burned": 71,
+      "pct": 49.0,
+      "wilson": [
+        41.0,
+        57.0
+      ],
+      "destroyed_in_burned": 53,
+      "destroyed_pct": 58.2,
+      "destroyed_wilson": [
+        48.0,
+        67.8
+      ]
+    },
+    "RBR": {
+      "in_burned": 45,
+      "pct": 31.0,
+      "wilson": [
+        24.1,
+        39.0
+      ],
+      "destroyed_in_burned": 34,
+      "destroyed_pct": 37.4,
+      "destroyed_wilson": [
+        28.1,
+        47.6
+      ]
+    }
+  }
+}
