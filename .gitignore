@@ -1,10 +1,12 @@
-__pycache__/
-*.egg-info/
-.venv/
-.mypy_cache/
-.pytest_cache/
-.ruff_cache/
-configuracion.toml
-*.parquet
-*.zip
-*.pbf
+   # Raw Sentinel-2 bands and third-party references are downloaded by the notebooks, never committed.
+   datos_crudos/
+   *.part
+   __pycache__/
+   .ipynb_checkpoints/
+   .pytest_cache/
+   .venv/
+   # Created by `pip install -e .` and by the quality tools.
+   *.egg-info/
+   .coverage
+   .mypy_cache/
+   .ruff_cache/
