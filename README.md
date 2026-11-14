@@ -4,9 +4,10 @@
 
 ¿Cuánta superficie se quemó, y con qué severidad, en el incendio del 2 y 3 de febrero de 2024 en Valparaíso, Viña del Mar, Quilpué y Villa Alemana? Este repositorio lo responde con dos escenas gratuitas de Sentinel-2 y un método abierto, **reconstruye el mapa desde cero en cualquier computador y lo comprueba con una huella de contenido**, y lo valida contra dos referencias independientes del Servicio de Gestión de Emergencias de Copernicus.
 
-- **Mapa interactivo:** [nadir-observatorio.github.io/incendio-vina-2024](https://nadir-observatorio.github.io/incendio-vina-2024/)
+- **Mapa interactivo:** [nadir-observatorio.github.io/incendios-severidad](https://nadir-observatorio.github.io/incendios-severidad/)
 - **Ficha técnica (PDF, dos páginas A4):** [español](ficha/ficha.pdf) · [inglés](ficha/factsheet.pdf)
 - **Fuentes y método:** [nadir-observatorio.github.io/metodo.html](https://nadir-observatorio.github.io/metodo.html)
+- **Caso hermano, daño a edificaciones con radar Sentinel-1:** [github.com/Nadir-Observatorio/incendios-dano-edificaciones](https://github.com/Nadir-Observatorio/incendios-dano-edificaciones)
 
 <!-- resultados: los escribe herramientas/escribir_readme.py desde datos/; no se editan a mano -->
 ## Resultados
@@ -99,8 +100,8 @@ Python 3.12. Las descargas van a `datos_crudos/` (ignorado por git): unos 210 MB
 
 1. Clonar el repositorio y entrar a la carpeta:
    ```bash
-   git clone https://github.com/Nadir-Observatorio/incendio-vina-2024.git
-   cd incendio-vina-2024
+   git clone https://github.com/Nadir-Observatorio/incendios-severidad.git
+   cd incendios-severidad
    ```
 2. Crear el entorno e instalar las versiones fijadas:
    ```bash
@@ -163,7 +164,7 @@ herramientas/    escribir_readme.py (bloque de resultados de los README)
 
 ## Cómo citar
 
-López Barra, C. (2026). *Severidad del incendio de Viña del Mar, febrero de 2024: mapa reproducible con Sentinel-2 y validación contra Copernicus EMS* [código y datos]. https://github.com/Nadir-Observatorio/incendio-vina-2024
+López Barra, C. (2026). *Severidad del incendio de Viña del Mar, febrero de 2024: mapa reproducible con Sentinel-2 y validación contra Copernicus EMS* [código y datos]. https://github.com/Nadir-Observatorio/incendios-severidad
 
 Los metadatos de cita están en [CITATION.cff](CITATION.cff); GitHub los ofrece en el botón "Cite this repository".
 

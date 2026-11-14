@@ -4,9 +4,10 @@
 
 How much land burned, and how severely, in the fire of 2 and 3 February 2024 in Valparaíso, Viña del Mar, Quilpué and Villa Alemana (Chile)? This repository answers with two free Sentinel-2 scenes and an open method, **rebuilds the map from scratch on any computer and proves it with a content hash**, and validates it against two independent Copernicus Emergency Management Service references.
 
-- **Interactive map:** [nadir-observatorio.github.io/incendio-vina-2024](https://nadir-observatorio.github.io/incendio-vina-2024/)
+- **Interactive map:** [nadir-observatorio.github.io/incendios-severidad](https://nadir-observatorio.github.io/incendios-severidad/)
 - **Technical factsheet (PDF, two A4 pages):** [English](ficha/factsheet.pdf) · [Spanish](ficha/ficha.pdf)
 - **Sources and method (Spanish):** [nadir-observatorio.github.io/metodo.html](https://nadir-observatorio.github.io/metodo.html)
+- **Sister case, building damage with Sentinel-1 radar:** [github.com/Nadir-Observatorio/incendios-dano-edificaciones](https://github.com/Nadir-Observatorio/incendios-dano-edificaciones)
 
 <!-- results: written by herramientas/escribir_readme.py from datos/; do not edit by hand -->
 ## Results
@@ -99,8 +100,8 @@ Python 3.12. Downloads go to `datos_crudos/` (ignored by git): about 210 MB of S
 
 1. Clone the repository and enter it:
    ```bash
-   git clone https://github.com/Nadir-Observatorio/incendio-vina-2024.git
-   cd incendio-vina-2024
+   git clone https://github.com/Nadir-Observatorio/incendios-severidad.git
+   cd incendios-severidad
    ```
 2. Create the environment and install the pinned versions:
    ```bash
@@ -163,7 +164,7 @@ herramientas/    escribir_readme.py (results block of the README files)
 
 ## How to cite
 
-López Barra, C. (2026). *Burn severity of the Viña del Mar fire, February 2024: reproducible dNBR mapping with Sentinel-2 and validation against Copernicus EMS* [code and data]. https://github.com/Nadir-Observatorio/incendio-vina-2024
+López Barra, C. (2026). *Burn severity of the Viña del Mar fire, February 2024: reproducible dNBR mapping with Sentinel-2 and validation against Copernicus EMS* [code and data]. https://github.com/Nadir-Observatorio/incendios-severidad
 
 Citation metadata are in [CITATION.cff](CITATION.cff); GitHub offers them under "Cite this repository".
 

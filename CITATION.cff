@@ -6,8 +6,8 @@ authors:
   - family-names: "López Barra"
     given-names: "Camilo"
 license: MIT
-repository-code: "https://github.com/Nadir-Observatorio/incendio-vina-2024"
-url: "https://nadir-observatorio.github.io/incendio-vina-2024/"
+repository-code: "https://github.com/Nadir-Observatorio/incendios-severidad"
+url: "https://nadir-observatorio.github.io/incendios-severidad/"
 date-released: "2026-11-10"
 keywords:
   - burn severity
