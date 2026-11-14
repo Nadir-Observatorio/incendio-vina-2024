@@ -1,5 +1,6 @@
 """Local threshold adjustment (severidad.ajuste) on synthetic data; the real run is checked
 against the published file when the raw data are present."""
+import hashlib
 import json
 import logging
 import shutil
@@ -447,3 +448,21 @@ class TestVerifyCalibrated:
         assert old in html
         page.write_text(html.replace(old, '"hectares":9999.9', 1), encoding="utf-8")
         assert any("DATA.calibrated.chosen.hectares" in p for p in estudio.compare_documents(root))
+
+
+# --- Files read by the case site ------------------------------------------------------------------
+
+# nadir-observatorio.github.io/vina-del-mar-2024 links to the viewer and the factsheet and reads the
+# calibrated figure from the adjustment file, checking it by this sha256.
+SITE_FILES = ("docs/index.html", "ficha/ficha.pdf", "datos/ajuste_umbrales.json")
+SITE_ADJUSTMENT_SHA256 = "9dd41007a46794bcd06450e3007da2033be978ff482ce0755ee807ccd920d8a9"
+SITE_NOTICE = ("tell the maintainer of nadir-observatorio.github.io/vina-del-mar-2024 before "
+               "publishing: its links break or its generator stops")
+
+
+def test_files_read_by_the_case_site():
+    """Moving, renaming or recomputing these files breaks the case site: this test stops it."""
+    missing = [name for name in SITE_FILES if not (ROOT / name).is_file()]
+    assert not missing, f"{missing} missing; {SITE_NOTICE}"
+    digest = hashlib.sha256((ROOT / "datos" / ajuste.ADJUSTMENT_FILE).read_bytes()).hexdigest()
+    assert digest == SITE_ADJUSTMENT_SHA256, f"{ajuste.ADJUSTMENT_FILE} changed; {SITE_NOTICE}"
