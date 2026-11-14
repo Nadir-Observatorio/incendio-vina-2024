@@ -2,7 +2,7 @@
 
 # Burn severity of the Viña del Mar fire, February 2024
 
-How much land burned, and how severely, in the fire of 2 and 3 February 2024 in Valparaíso, Viña del Mar, Quilpué and Villa Alemana (Chile)? This repository answers with two free Sentinel-2 scenes and an open method, **rebuilds the map from scratch on any computer and proves it with a content hash**, and validates it against two independent Copernicus Emergency Management Service references.
+How much land burned, and how severely, in the fire of 2 and 3 February 2024 in Valparaíso, Viña del Mar, Quilpué and Villa Alemana (Chile)? This repository answers with the dNBR between two Sentinel-2 scenes, of 18 January and 12 February 2024. **It rebuilds the map from those scenes and `python -m severidad verify` checks that its content hash is that of `datos/clases.tif`; rebuilt on Windows and on Linux, it is the same.** It validates it against the EMSR715 delineation (WorldView-2, 2 m) and the building damage points of EMSN188, both from the Copernicus Emergency Management Service.
 
 - **Interactive map:** [nadir-observatorio.github.io/incendios-severidad](https://nadir-observatorio.github.io/incendios-severidad/)
 - **Technical factsheet (PDF, two A4 pages):** [English](ficha/factsheet.pdf) · [Spanish](ficha/ficha.pdf)

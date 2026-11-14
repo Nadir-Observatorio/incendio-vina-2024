@@ -2,7 +2,7 @@
 
 # Severidad del incendio de Viña del Mar, febrero de 2024
 
-¿Cuánta superficie se quemó, y con qué severidad, en el incendio del 2 y 3 de febrero de 2024 en Valparaíso, Viña del Mar, Quilpué y Villa Alemana? Este repositorio lo responde con dos escenas gratuitas de Sentinel-2 y un método abierto, **reconstruye el mapa desde cero en cualquier computador y lo comprueba con una huella de contenido**, y lo valida contra dos referencias independientes del Servicio de Gestión de Emergencias de Copernicus.
+¿Cuánta superficie se quemó, y con qué severidad, en el incendio del 2 y 3 de febrero de 2024 en Valparaíso, Viña del Mar, Quilpué y Villa Alemana? Este repositorio lo responde con el dNBR entre dos escenas Sentinel-2, del 18 de enero y del 12 de febrero de 2024. **Rehace el mapa desde esas escenas y `python -m severidad verify` comprueba que su huella de contenido sea la de `datos/clases.tif`; rehecho en Windows y en Linux, da la misma.** Lo valida contra la delimitación EMSR715 (WorldView-2, 2 m) y los puntos de daño a edificaciones de EMSN188, ambos del Servicio de Gestión de Emergencias de Copernicus.
 
 - **Mapa interactivo:** [nadir-observatorio.github.io/incendios-severidad](https://nadir-observatorio.github.io/incendios-severidad/)
 - **Ficha técnica (PDF, dos páginas A4):** [español](ficha/ficha.pdf) · [inglés](ficha/factsheet.pdf)
